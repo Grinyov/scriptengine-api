@@ -2,9 +2,7 @@ package com.grinyov.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by vgrinyov.
@@ -12,10 +10,16 @@ import javax.persistence.Id;
 @Entity
 @Data
 public class Script {
+
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column(nullable = false)
     private String script;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
 
     public enum Status {
@@ -28,5 +32,7 @@ public class Script {
 
         FAILED
     }
+
+    @Column(nullable = false)
     private String result;
 }
