@@ -1,9 +1,8 @@
-package com.grinyov;
+package com.grinyov.service;
 
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
-import com.grinyov.service.ScriptProccessingService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
