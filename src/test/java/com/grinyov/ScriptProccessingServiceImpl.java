@@ -15,7 +15,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     private ScriptRepository scriptRepository;
 
     @Override
-    public Script perform(Long id) throws InvalidScriptStateException{
+    public Script perform(Long id) throws InvalidScriptStateException {
        Script script = scriptRepository.findOne(id);
        // run script in ScriptEngine
         return scriptRepository.save(script);
@@ -29,7 +29,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     @Override
-    public void terminate(Long id) {
+    public void terminate(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
         // terminate script
     }
