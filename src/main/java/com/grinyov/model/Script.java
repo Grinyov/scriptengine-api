@@ -16,6 +16,17 @@ public class Script {
     @GeneratedValue
     private Long id;
     private String script;
-    private String status;
+    private Status status = Status.NEW;
+
+    public enum Status {
+
+        NEW,
+
+        RUNNING,
+
+        DONE,
+
+        FAILED
+    }
     private String result;
 }
