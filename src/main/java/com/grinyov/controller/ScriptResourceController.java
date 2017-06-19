@@ -1,5 +1,6 @@
 package com.grinyov.controller;
 
+
 import com.grinyov.service.ScriptProccessingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
@@ -22,8 +23,22 @@ public class ScriptResourceController {
     @RequestMapping(value = "/scripts/{id}/running",
             method = RequestMethod.PUT)
     @ResponseBody
-    public PersistentEntityResource running(@PathVariable("id") Long id,
+    public PersistentEntityResource perform(@PathVariable("id") Long id,
                                             PersistentEntityResourceAssembler asm){
         return asm.toFullResource(scriptProccessingService.perform(id));
+    }
+
+    @RequestMapping(value = "/scripts/{id}/detail",
+            method = RequestMethod.GET)
+    public void viewOne(@PathVariable("id") Long id,
+                                            PersistentEntityResourceAssembler asm){
+        asm.toFullResource(scriptProccessingService.detail(id));
+    }
+
+    @RequestMapping(value = "/scripts/detailAll",
+            method = RequestMethod.GET)
+    public void viewAll(@PathVariable("id") Long id,
+                                            PersistentEntityResourceAssembler asm){
+        asm.toFullResource(scriptProccessingService.showAll());
     }
 }

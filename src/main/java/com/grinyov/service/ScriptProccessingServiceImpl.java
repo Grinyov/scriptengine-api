@@ -3,21 +3,28 @@ package com.grinyov.service;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by vgrinyov.
  */
+@Service
+@Transactional
 public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     @Autowired
     private ScriptRepository scriptRepository;
 
+    private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);
+
     @Override
     public Script perform(Long id) throws InvalidScriptStateException {
        Script script = scriptRepository.findOne(id);
        // run script in ScriptEngine
-        return scriptRepository.save(script);
+       return scriptRepository.save(script);
     }
 
     @Override
@@ -28,9 +35,18 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     @Override
+    public Iterable<Script> showAll() {
+        Iterable<Script> scriptList = scriptRepository.findAll();
+        // show running scripts
+        return scriptList;
+    }
+
+    @Override
     public void terminate(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
         // terminate script
     }
+
+
 
 }

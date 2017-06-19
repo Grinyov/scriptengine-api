@@ -1,7 +1,7 @@
 package com.grinyov.model;
 
 import lombok.Data;
-
+import org.springframework.hateoas.Identifiable;
 import javax.persistence.*;
 
 /**
@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Data
-public class Script {
+public class Script implements Identifiable<Long> {
 
     @Id
     @GeneratedValue
