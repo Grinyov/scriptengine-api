@@ -17,20 +17,16 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @Component
 public class ScriptResourceProcessor implements ResourceProcessor<Resource<Script>> {
 
-    @Autowired
-    private RepositoryEntityLinks entityLinks;
-
     @Override
     public Resource<Script> process(Resource<Script> resource) {
         final Script script = resource.getContent();
-        if (script.getStatus() != Script.Status.RUNNING){
-            resource.add(linkTo(methodOn(ScriptResourceController.class).perform(script.getId(), null)).withRel("running"));
-        }
 
-        resource.add(entityLinks.linkToSingleResource(script).withRel("terminate"));
-//        if (script.getStatus() == Script.Status.RUNNING){
-//            resource.add(linkTo(methodOn(ScriptResourceController.class).viewAll().withRel("showAll");
-//        }
+        resource.add(linkTo(methodOn(ScriptResourceController.class).
+                perform(script.getId(), null)).withRel("running"));
+        resource.add(linkTo(methodOn(ScriptResourceController.class).
+                viewOne(script.getId(), null)).withRel("detail"));
+        resource.add(linkTo(methodOn(ScriptResourceController.class).
+                terminateOne(script.getId(), null)).withRel("terminate"));
 
         return resource;
     }

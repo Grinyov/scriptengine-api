@@ -35,16 +35,10 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     @Override
-    public Iterable<Script> showAll() {
-        Iterable<Script> scriptList = scriptRepository.findAll();
-        // show running scripts
-        return scriptList;
-    }
-
-    @Override
-    public void terminate(Long id) throws InvalidScriptStateException {
+    public Script terminate(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
         // terminate script
+        return scriptRepository.save(script);
     }
 
 

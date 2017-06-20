@@ -21,7 +21,7 @@ public class ScriptResourceController {
     private ScriptProccessingService scriptProccessingService;
 
     @RequestMapping(value = "/scripts/{id}/running",
-            method = RequestMethod.PUT)
+            method = RequestMethod.PUT, produces = "application/hal+json")
     @ResponseBody
     public PersistentEntityResource perform(@PathVariable("id") Long id,
                                             PersistentEntityResourceAssembler asm){
@@ -29,16 +29,20 @@ public class ScriptResourceController {
     }
 
     @RequestMapping(value = "/scripts/{id}/detail",
-            method = RequestMethod.GET)
-    public void viewOne(@PathVariable("id") Long id,
+            method = RequestMethod.GET, produces = "application/hal+json")
+    @ResponseBody
+    public PersistentEntityResource viewOne(@PathVariable("id") Long id,
                                             PersistentEntityResourceAssembler asm){
-        asm.toFullResource(scriptProccessingService.detail(id));
+        return asm.toFullResource(scriptProccessingService.detail(id));
     }
 
-    @RequestMapping(value = "/scripts/detailAll",
-            method = RequestMethod.GET)
-    public void viewAll(@PathVariable("id") Long id,
+    @RequestMapping(value = "/scripts/{id}/terminate",
+            method = RequestMethod.PUT, produces = "application/hal+json")
+    @ResponseBody
+    public PersistentEntityResource terminateOne(@PathVariable("id") Long id,
                                             PersistentEntityResourceAssembler asm){
-        asm.toFullResource(scriptProccessingService.showAll());
+        return asm.toFullResource(scriptProccessingService.terminate(id));
     }
+
+
 }
