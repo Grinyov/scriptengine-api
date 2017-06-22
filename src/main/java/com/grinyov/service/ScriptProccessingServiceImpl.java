@@ -18,12 +18,16 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Autowired
     private ScriptRepository scriptRepository;
 
+    @Autowired
+    private ScriptExecutionHelper scriptExecutionHelper;
+
     private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);
 
     @Override
     public Script perform(Long id) throws InvalidScriptStateException {
        Script script = scriptRepository.findOne(id);
        // run script in ScriptEngine
+        scriptExecutionHelper.executeScript(script);
        return scriptRepository.save(script);
     }
 
@@ -38,6 +42,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     public Script terminate(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
         // terminate script
+        scriptExecutionHelper.terminateScript(script);
         return scriptRepository.save(script);
     }
 
