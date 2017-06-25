@@ -29,7 +29,7 @@ public class ScriptExecutionHelper {
         ScriptEngine engine = engineManager.getEngine();
 
         if (!engineManager.compile(script.getScript(), engine)) {
-            throw new FailedScriptCompilationException("script compiled unsuccessul!");
+            throw new FailedScriptCompilationException("script compiled unsuccessful!");
         }
 
         StringWriter stringWriter = new StringWriter();
@@ -37,10 +37,14 @@ public class ScriptExecutionHelper {
 
         try {
             engine.eval(script.getScript());
-        }catch (ScriptException e) {
+            script.setStatus(Script.Status.RUNNING);
+            logger.info("script " + script.getId() + "running");
+        } catch (ScriptException e) {
+            logger.info("script executed unsuccessful!");
             logger.info(e.getMessage());
-            throw new InvalidScriptStateException("script executed unsuccessul!");
+            throw new InvalidScriptStateException("script executed unsuccessful!");
         }
+        script.setStatus(Script.Status.DONE);
+        logger.info("script executed successful");
     }
-
 }

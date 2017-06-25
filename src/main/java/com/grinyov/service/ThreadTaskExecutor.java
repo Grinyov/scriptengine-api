@@ -3,6 +3,8 @@ package com.grinyov.service;
 import com.grinyov.model.Script;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -14,9 +16,13 @@ import java.util.concurrent.*;
  *
  */
 @Service
+@PropertySource("classpath:application.properties")
 public class ThreadTaskExecutor implements ThreadTaskExecutorService {
 
     private static final Logger logger = Logger.getLogger(ScriptExecutionHelper.class);
+
+    @Value("${timeout}")
+    private int timeout;
 
     private Map<Long, ExecutorService> executors= new ConcurrentHashMap<>();
 
@@ -31,11 +37,15 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
         executor.submit(() -> {
             try {
                 scriptExecutionHelper.executeScript(script);
-            } catch (ExecutionException e) {
+                System.out.println("scripts " + script.getId() + "running");
+                executor.shutdown();
+                executor.awaitTermination(timeout, TimeUnit.SECONDS);
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                executor.shutdownNow();
             }
         });
-
     }
 
     @Override
