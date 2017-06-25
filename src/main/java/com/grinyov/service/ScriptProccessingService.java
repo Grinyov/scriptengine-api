@@ -9,6 +9,6 @@ import com.grinyov.model.Script;
 public interface ScriptProccessingService {
 
     Script perform(Long id);
-    Script detail(Long id);
+    String detail(Long id);
     Script terminate(Long id);
 }
