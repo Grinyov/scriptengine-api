@@ -17,7 +17,7 @@ import javax.script.ScriptException;
 @PropertySource("classpath:application.properties")
 public class EngineManager {
 
-    private static final Logger LOG = Logger.getLogger(EngineManager.class);
+    private static final Logger logger = Logger.getLogger(EngineManager.class);
 
     @Value("${engine.name}")
     private String engineName;
@@ -25,17 +25,17 @@ public class EngineManager {
     public ScriptEngine getEngine() {
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName(engineName);
-        LOG.debug("Engine was created");
+        logger.debug("Engine was created");
         return engine;
     }
 
     public boolean compile(String script, ScriptEngine engine) {
         try {
             ((Compilable) engine).compile(script);
-            LOG.debug("Script compiled successful: \n" + script);
+            logger.debug("Script compiled successful: \n" + script);
             return true;
         } catch (ScriptException e) {
-            LOG.warn("Script \"" + script + "\" compiled unsuccessful!");
+            logger.warn("Script \"" + script + "\" compiled unsuccessful!");
             return false;
         }
     }
