@@ -14,7 +14,6 @@ import javax.script.ScriptException;
  * Created by vgrinyov
  */
 @Component
-@PropertySource("classpath:application.properties")
 public class EngineManager {
 
     private static final Logger logger = Logger.getLogger(EngineManager.class);

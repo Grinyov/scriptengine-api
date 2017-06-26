@@ -16,7 +16,6 @@ import java.util.concurrent.*;
  *
  */
 @Service
-@PropertySource("classpath:application.properties")
 public class ThreadTaskExecutor implements ThreadTaskExecutorService {
 
     private static final Logger logger = Logger.getLogger(ScriptExecutionHelper.class);
@@ -24,7 +23,7 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
     @Value("${timeout}")
     private int timeout;
 
-    private Map<Long, ExecutorService> executors= new ConcurrentHashMap<>();
+    private Map<Long, ExecutorService> executors = new ConcurrentHashMap<>();
 
     @Autowired
     private ScriptExecutionHelper scriptExecutionHelper;
@@ -37,11 +36,10 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
         executor.submit(() -> {
             try {
                 scriptExecutionHelper.executeScript(script);
-                System.out.println("scripts " + script.getId() + "running");
                 executor.shutdown();
                 executor.awaitTermination(timeout, TimeUnit.SECONDS);
             } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+                logger.error("script executed failed ", e);
             } finally {
                 executor.shutdownNow();
             }
