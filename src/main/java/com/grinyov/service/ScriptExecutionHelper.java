@@ -37,15 +37,17 @@ public class ScriptExecutionHelper {
         engine.getContext().setWriter(stringWriter);
 
         try {
-            engine.eval(script.getScript());
             script.setStatus(Script.Status.RUNNING);
+            engine.eval(script.getScript());
             logger.info("script " + script.getId() + " running");
         } catch (ScriptException e) {
             script.setStatus(Script.Status.FAILED);
             logger.error("script executed unsuccessful ",e);
             throw new InvalidScriptStateException("script executed unsuccessful!");
         }
+
+        script.setResult(stringWriter.toString());
         script.setStatus(Script.Status.DONE);
-        logger.info("script executed successful");
+        logger.info("script executed successful. Detail: " + script.getStatus() + ". Result:  " + script.getResult());
     }
 }
