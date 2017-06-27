@@ -32,10 +32,13 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     @Override
-    public String detail(Long id) {
+    public Script detail(Long id) {
         Script script = scriptRepository.findOne(id);
-        logger.info("script " + script.getId() + " detail: " + script.getStatus());
-        return script.getStatus().toString();
+        String state = "script " + script.getId() +
+                " detail: " + script.getStatus() +
+                " result: " + script.getResult();
+        logger.info(state);
+        return scriptRepository.save(script);
     }
 
     @Override
