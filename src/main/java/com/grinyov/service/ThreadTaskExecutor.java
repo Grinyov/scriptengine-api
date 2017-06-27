@@ -12,7 +12,6 @@ import java.util.concurrent.*;
 
 /**
  * Created by vgrinyov
- *
  */
 @Service
 public class ThreadTaskExecutor implements ThreadTaskExecutorService {
@@ -28,7 +27,7 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
     private ScriptExecutionHelper scriptExecutionHelper;
 
     @Override
-    public void runTask(Script script){
+    public void runTask(Script script) {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executors.put(script.getId(), executor);
@@ -46,7 +45,7 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
     }
 
     @Override
-    public void terminateTask(Script script){
+    public void terminateTask(Script script) {
         ExecutorService executor = executors.get(script.getId());
         executor.shutdownNow();
     }

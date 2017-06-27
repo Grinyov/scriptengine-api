@@ -42,7 +42,7 @@ public class ScriptExecutionHelper {
             logger.info("script " + script.getId() + " running");
         } catch (ScriptException e) {
             script.setStatus(Script.Status.FAILED);
-            logger.error("script executed unsuccessful ",e);
+            logger.error("script executed unsuccessful ", e);
             throw new InvalidScriptStateException("script executed unsuccessful!");
         }
 

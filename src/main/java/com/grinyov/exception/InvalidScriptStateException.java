@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Created by vgrinyov.
+ *
+ * Means that the script hung and does not respond
  */
 @ResponseStatus(HttpStatus.CONFLICT)
 public class InvalidScriptStateException extends RuntimeException {

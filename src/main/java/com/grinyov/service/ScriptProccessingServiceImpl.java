@@ -26,18 +26,17 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     @Override
     public Script perform(Long id) throws InvalidScriptStateException {
-       Script script = scriptRepository.findOne(id);
-       executorService.runTask(script);
-       return scriptRepository.save(script);
+        Script script = scriptRepository.findOne(id);
+        executorService.runTask(script);
+        return scriptRepository.save(script);
     }
 
     @Override
     public Script detail(Long id) {
         Script script = scriptRepository.findOne(id);
-        String state = "script " + script.getId() +
+        logger.info("script " + script.getId() +
                 " detail: " + script.getStatus() +
-                " result: " + script.getResult();
-        logger.info(state);
+                " result: " + script.getResult());
         return scriptRepository.save(script);
     }
 
@@ -47,7 +46,5 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         executorService.terminateTask(script);
         return scriptRepository.save(script);
     }
-
-
 
 }
