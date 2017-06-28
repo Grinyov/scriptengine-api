@@ -33,6 +33,6 @@ public class Script implements Identifiable<Long> {
         FAILED
     }
 
-    //@Column(nullable = false)
+    @Column(nullable = false)
     private String result;
 }
