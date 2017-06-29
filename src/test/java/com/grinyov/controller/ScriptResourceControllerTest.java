@@ -1,20 +1,20 @@
 package com.grinyov.controller;
 
+import com.grinyov.ScriptengineApiApplication;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptProccessingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -22,12 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by vgrinyov
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(ScriptResourceController.class)
-//@SpringBootTest
-//@AutoConfigureMockMvc
+@SpringBootTest(classes = ScriptengineApiApplication.class)
+@WebAppConfiguration
 public class ScriptResourceControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -51,16 +49,12 @@ public class ScriptResourceControllerTest {
     @Test
     public void perform() throws Exception {
 
-
-
         Script script = new Script();
         script.setScript("print('task1')");
         given(this.scriptProccessingService.perform(1L)).willReturn(script);
         mockMvc.perform(put("/scripts/" + 1L + "/running")
                 .content("print('task1')"))
                 .andExpect(status().isOk());
-
-
 
     }
 
