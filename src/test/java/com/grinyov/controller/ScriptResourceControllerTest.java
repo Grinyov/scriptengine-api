@@ -1,62 +1,66 @@
 package com.grinyov.controller;
 
+import com.grinyov.dao.ScriptRepository;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptProccessingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-
-import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * Created by vgrinyov
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(ScriptResourceController.class)
+//@SpringBootTest
+//@AutoConfigureMockMvc
 public class ScriptResourceControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockBean
     private ScriptProccessingService scriptProccessingService;
+
+    @MockBean
+    private ScriptRepository scriptRepository;
+
+
+    @Test
+    public void setScriptById() throws Exception {
+        Script script = new Script();
+        script.setScript("print('task1')");
+        given(this.scriptRepository.findOne(1L)).willReturn(script);
+
+        mockMvc.perform(get("/script/" + 1L))
+                .andExpect(status().isOk());
+    }
 
 
     @Test
     public void perform() throws Exception {
 
-        Script script = script();
-        String requestBody = saveRequestJsonString(script);
 
 
-          ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
-                .put("/scripts/{id}/running")
-                .accept(MediaTypes.HAL_JSON)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON));
+        Script script = new Script();
+        script.setScript("print('task1')");
+        given(this.scriptProccessingService.perform(1L)).willReturn(script);
+        mockMvc.perform(put("/scripts/" + 1L + "/running")
+                .content("print('task1')"))
+                .andExpect(status().isOk());
 
-        final Script runningScript = findRunningScript();
-        resultActions.andExpect(status().isAccepted())
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/scripts/{id}/running" ))
-                .andExpect(jsonPath("$.id", is(script.getId())))
-                .andExpect(jsonPath("$.script", is(script.getScript())))
-                .andExpect(jsonPath("$.currency", is(script.getStatus().equals(Script.Status.NEW))))
-                .andExpect(jsonPath("$.comment", is(script.getResult())));
+
 
     }
 
@@ -73,7 +77,7 @@ public class ScriptResourceControllerTest {
 
       private Script script() {
           Script script = new Script();
-          script.setId(1l);
+//          script.setId(1L);
           script.setScript("while(true)");
           script.setStatus(Script.Status.NEW);
           script.setResult("task1: ");
@@ -82,14 +86,16 @@ public class ScriptResourceControllerTest {
 
     private static String saveRequestJsonString(Script script) {
         return "{\n" +
-                "  \"id\": \"" + script.getId() + "\",\n" +
+//                "  \"id\": \"" + script.getId() + "\",\n" +
                 "  \"script\": " + script.getScript() + ",\n" +
                 "  \"status\": \"" + script.getStatus() + "\",\n" +
                 "  \"result\": \"" + script.getResult() + "\"\n" +
                 "}";
     }
 
-    private Script findRunningScript(){return null;}
+    private Script findRunningScript(){
+        return null;
+    }
 
 }
 
