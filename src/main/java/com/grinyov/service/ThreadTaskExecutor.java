@@ -34,8 +34,9 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
         executor.submit(() -> {
             try {
                 scriptExecutionHelper.executeScript(script);
-                executor.shutdown();
+                logger.info(script.getResult());
                 executor.awaitTermination(timeout, TimeUnit.SECONDS);
+                executor.shutdown();
             } catch (ExecutionException | InterruptedException e) {
                 logger.error("script executed failed ", e);
             } finally {

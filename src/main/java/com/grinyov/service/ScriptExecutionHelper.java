@@ -33,7 +33,7 @@ public class ScriptExecutionHelper {
         ScriptEngine engine = engineManager.getEngine();
 
         if (!engineManager.compile(script.getScript(), engine)) {
-            logger.error("script compiled unsuccessful");
+            logger.error("The script can not compile");
             throw new FailedScriptCompilationException("script compiled unsuccessful!");
         }
 
@@ -45,10 +45,15 @@ public class ScriptExecutionHelper {
             scriptRepository.save(script);
             engine.eval(script.getScript());
             logger.info("script " + script.getId() + " detail: " + script.getStatus());
+            script.setResult("The result of running the script: " + stringWriter);
+            //script.setResult("The result of running the script: " +(String)engine.eval(script.getScript()));
+            logger.info(script.getResult());
+            scriptRepository.save(script);
         } catch (ScriptException e) {
             script.setStatus(Script.Status.FAILED);
+            script.setResult("Failed to run the script: " + stringWriter);
             scriptRepository.save(script);
-            logger.error("script executed unsuccessful ", e);
+            logger.error("The script can not execute", e);
             throw new InvalidScriptStateException("script executed unsuccessful!");
         }
 

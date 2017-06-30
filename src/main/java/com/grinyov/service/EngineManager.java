@@ -31,7 +31,7 @@ public class EngineManager {
     public boolean compile(String script, ScriptEngine engine) {
         try {
             ((Compilable) engine).compile(script);
-            logger.debug("Script compiled successful: \n" + script);
+            logger.info("Script compiled successful: \n" + script);
             return true;
         } catch (ScriptException e) {
             logger.warn("Script \"" + script + "\" compiled unsuccessful!");
