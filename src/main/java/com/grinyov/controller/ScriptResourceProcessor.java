@@ -1,4 +1,4 @@
-package com.grinyov.service;
+package com.grinyov.controller;
 
 import com.grinyov.controller.ScriptResourceController;
 import com.grinyov.model.Script;
