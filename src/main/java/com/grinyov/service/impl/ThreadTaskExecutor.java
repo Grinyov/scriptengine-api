@@ -42,7 +42,7 @@ public class ThreadTaskExecutor implements ThreadTaskExecutorService {
             } catch (ExecutionException | InterruptedException e) {
                 logger.error("script executed failed ", e);
             } finally {
-                logger.info("the tsk is terminated. " + Thread.currentThread() + " is managed " + executor.toString() + " is shutdown!");
+                logger.info("the task is terminated. " + Thread.currentThread() + " is managed " + executor.toString() + " is shutdown!");
                 executor.shutdownNow();
             }
         });
