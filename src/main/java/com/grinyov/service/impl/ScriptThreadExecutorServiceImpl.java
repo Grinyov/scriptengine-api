@@ -67,16 +67,17 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         }
 
         StringWriter stringWriter = new StringWriter();
-        engine.getContext().setWriter(stringWriter);
+//        engine.getContext().setWriter(stringWriter);
 
         try {
+            engine.getContext().setWriter(stringWriter);
             script.setStatus(Script.Status.RUNNING);
             scriptRepository.save(script);
             engine.eval(script.getScript());
             logger.info("script " + script.getId() + " detail: " + script.getStatus());
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
-            script.setResult(stringWriter.toString());
+            script.setResult(stringWriter.getBuffer().toString());
             script.setStatus(Script.Status.DONE);
             scriptRepository.save(script);
             logger.info("script executed successful. Detail: " + script.getStatus() + ". Result:  " + script.getResult());
