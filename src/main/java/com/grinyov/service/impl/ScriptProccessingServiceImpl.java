@@ -4,7 +4,7 @@ import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptProccessingService;
-import com.grinyov.service.ThreadTaskExecutorService;
+import com.grinyov.service.ScriptThreadExecutorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     private ScriptRepository scriptRepository;
 
     @Autowired
-    private ThreadTaskExecutorService executorService;
+    private ScriptThreadExecutorService executorService;
 
 
     private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);

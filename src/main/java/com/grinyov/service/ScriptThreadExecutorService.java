@@ -7,7 +7,7 @@ import com.grinyov.model.Script;
  * <p>
  * The service for starting and Interrupting threads
  */
-public interface ThreadTaskExecutorService {
+public interface ScriptThreadExecutorService {
 
     /**
      * Starts script processing in a separate thread

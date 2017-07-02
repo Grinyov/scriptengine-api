@@ -4,32 +4,40 @@ import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.FailedScriptCompilationException;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
+import com.grinyov.service.ScriptThreadExecutorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.script.Compilable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.StringWriter;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
+import java.util.concurrent.*;
+
 
 /**
  * Created by vgrinyov
  */
-@Component
-public class ScriptExecutionHelper {
+@Service
+public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorService {
 
-    private static final Logger logger = Logger.getLogger(ScriptExecutionHelper.class);
+    private static final Logger logger = Logger.getLogger(ScriptThreadExecutorServiceImpl.class);
+
+    @Value("${timeout}")
+    private int timeout;
+
+    @Value("${engine.name}")
+    private String engineName;
+
+    private Map<Long, ExecutorService> executors = new ConcurrentHashMap<>();
 
     @Autowired
     private ScriptRepository scriptRepository;
 
-
-    @Value("${engine.name}")
-    private String engineName;
 
     public ScriptEngine getEngine() {
         ScriptEngineManager factory = new ScriptEngineManager();
@@ -48,7 +56,6 @@ public class ScriptExecutionHelper {
             return false;
         }
     }
-
 
     public void executeScript(Script script) throws ExecutionException {
 
@@ -81,5 +88,31 @@ public class ScriptExecutionHelper {
             throw new InvalidScriptStateException("script executed unsuccessful!");
         }
 
+    }
+
+    @Override
+    public void runTask(Script script) {
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executors.put(script.getId(), executor);
+        executor.submit(() -> {
+            try {
+                executeScript(script);
+                logger.info(script.getResult());
+                executor.awaitTermination(timeout, TimeUnit.SECONDS);
+                executor.shutdown();
+            } catch (ExecutionException | InterruptedException e) {
+                logger.error("script executed failed ", e);
+            } finally {
+                logger.info("the task is terminated. " + Thread.currentThread() + " is managed " + executor.toString() + " is shutdown!");
+                executor.shutdownNow();
+            }
+        });
+    }
+
+    @Override
+    public void terminateTask(Script script) {
+        ExecutorService executor = executors.get(script.getId());
+        executor.shutdownNow();
     }
 }
