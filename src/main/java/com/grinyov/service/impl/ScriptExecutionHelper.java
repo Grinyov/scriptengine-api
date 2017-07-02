@@ -1,4 +1,4 @@
-package com.grinyov.service;
+package com.grinyov.service.impl;
 
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.FailedScriptCompilationException;

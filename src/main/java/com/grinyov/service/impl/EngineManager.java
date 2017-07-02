@@ -1,8 +1,7 @@
-package com.grinyov.service;
+package com.grinyov.service.impl;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.script.Compilable;
