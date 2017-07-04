@@ -99,14 +99,8 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         executor.submit(() -> {
             try {
                 executeScript(script);
-                logger.info(script.getResult());
-                executor.awaitTermination(timeout, TimeUnit.SECONDS);
-                executor.shutdown();
-            } catch (ExecutionException | InterruptedException e) {
+            } catch (ExecutionException e) {
                 logger.error("script executed failed ", e);
-            } finally {
-                logger.info("the task is terminated. " + Thread.currentThread() + " is managed " + executor.toString() + " is shutdown!");
-                executor.shutdownNow();
             }
         });
     }
@@ -114,6 +108,13 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     @Override
     public void terminateTask(Script script) {
         ExecutorService executor = executors.get(script.getId());
-        executor.shutdownNow();
+        try {
+            executor.awaitTermination(timeout, TimeUnit.SECONDS);
+            logger.info("the task is terminated. " + Thread.currentThread() +
+                    " is managed " + executor.toString() + " is shutdown!");
+            executor.shutdown();
+        } catch (InterruptedException e) {
+            logger.error("script shutdowned failed ", e);
+        }
     }
 }
