@@ -37,7 +37,6 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     public Script detail(Long id) {
         Script script = scriptRepository.findOne(id);
         logger.info("script " + script.getId() +
-                " detail: " + script.getStatus() +
                 " result: " + script.getResult());
         return scriptRepository.save(script);
     }

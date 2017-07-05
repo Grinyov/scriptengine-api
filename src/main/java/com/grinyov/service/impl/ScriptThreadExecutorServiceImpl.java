@@ -49,10 +49,10 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     public boolean compileScript(String script, ScriptEngine engine) {
         try {
             ((Compilable) engine).compile(script);
-            logger.info("Script compiled successful: \n" + script);
+            logger.debug("Script compiled successful. :-) \n");
             return true;
         } catch (ScriptException e) {
-            logger.warn("Script \"" + script + "\" compiled unsuccessful!");
+            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(");
             return false;
         }
     }
@@ -74,13 +74,13 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             script.setStatus(Script.Status.RUNNING);
             scriptRepository.save(script);
             engine.eval(script.getScript());
-            logger.info("script " + script.getId() + " detail: " + script.getStatus());
+            logger.info("script " + script.getId() + " status: " + script.getStatus());
+            //check 1
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
-            script.setResult(stringWriter.getBuffer().toString());
             script.setStatus(Script.Status.DONE);
             scriptRepository.save(script);
-            logger.info("script executed successful. Detail: " + script.getStatus() + ". Result:  " + script.getResult());
+            logger.info("script executed successful. Status: " + script.getStatus() + ". Detail:  " + script.getResult());
         } catch (ScriptException e) {
             script.setStatus(Script.Status.FAILED);
             script.setResult("Failed to run the script: " + stringWriter);
@@ -114,7 +114,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
                     " is managed " + executor.toString() + " is shutdown!");
             executor.shutdown();
         } catch (InterruptedException e) {
-            logger.error("script shutdowned failed ", e);
+            logger.error("script shutdown failed ", e);
         }
     }
 }
