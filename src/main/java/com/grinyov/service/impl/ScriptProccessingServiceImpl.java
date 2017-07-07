@@ -48,4 +48,10 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         return scriptRepository.save(script);
     }
 
+    @Override
+    public String viewBody(Long id) {
+        Script script = scriptRepository.findOne(id);
+        return script.getScript();
+    }
+
 }

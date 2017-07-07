@@ -33,4 +33,13 @@ public interface ScriptProccessingService {
      * @return script
      */
     Script terminate(Long id);
+
+    /**
+     * Interrupts the processing of this script
+     *
+     * @param id
+     * @return script
+     */
+    String viewBody(Long id);
+
 }

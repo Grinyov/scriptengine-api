@@ -24,7 +24,7 @@ public class ScriptResourceController {
             method = RequestMethod.PUT, produces = "application/hal+json")
     @ResponseBody
     public PersistentEntityResource perform(@PathVariable("id") Long id,
-                                            PersistentEntityResourceAssembler asm){
+                                            PersistentEntityResourceAssembler asm) {
         return asm.toFullResource(scriptProccessingService.perform(id));
     }
 
@@ -32,7 +32,7 @@ public class ScriptResourceController {
             method = RequestMethod.GET, produces = "application/hal+json")
     @ResponseBody
     public PersistentEntityResource viewOne(@PathVariable("id") Long id,
-                                            PersistentEntityResourceAssembler asm){
+                                            PersistentEntityResourceAssembler asm) {
         return asm.toFullResource(scriptProccessingService.detail(id));
     }
 
@@ -40,9 +40,8 @@ public class ScriptResourceController {
             method = RequestMethod.PUT, produces = "application/hal+json")
     @ResponseBody
     public PersistentEntityResource terminateOne(@PathVariable("id") Long id,
-                                            PersistentEntityResourceAssembler asm){
+                                                 PersistentEntityResourceAssembler asm) {
         return asm.toFullResource(scriptProccessingService.terminate(id));
     }
-
 
 }
