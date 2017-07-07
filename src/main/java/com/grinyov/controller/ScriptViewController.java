@@ -23,4 +23,11 @@ public class ScriptViewController {
     public String viewScriptBody(@PathVariable("id") Long id){
         return scriptProccessingService.viewBody(id);
     }
+
+    @RequestMapping(value = "/scripts/{id}/detail",
+            method = RequestMethod.GET, produces = "text/plain")
+    @ResponseBody
+    public String viewScriptDetail(@PathVariable("id") Long id){
+        return scriptProccessingService.viewDetail(id);
+    }
 }

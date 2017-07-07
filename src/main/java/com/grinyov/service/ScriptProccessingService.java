@@ -5,7 +5,7 @@ import com.grinyov.model.Script;
 /**
  * Created by vgrinyov.
  * <p>
- * The service for starting, detailing and finishing the script processing
+ * The service for starting, detailing of script and finishing the script processing
  */
 
 public interface ScriptProccessingService {
@@ -24,7 +24,7 @@ public interface ScriptProccessingService {
      * @param id
      * @return script
      */
-    Script detail(Long id);
+    Script status(Long id);
 
     /**
      * Interrupts the processing of this script
@@ -35,11 +35,19 @@ public interface ScriptProccessingService {
     Script terminate(Long id);
 
     /**
-     * Interrupts the processing of this script
+     * Views the body of script
      *
      * @param id
-     * @return script
+     * @return script's body as plain text
      */
     String viewBody(Long id);
+
+    /**
+     * Views the detail of running the script
+     *
+     * @param id
+     * @return result of running the script as plain text
+     */
+    String viewDetail(Long id);
 
 }

@@ -28,12 +28,12 @@ public class ScriptResourceController {
         return asm.toFullResource(scriptProccessingService.perform(id));
     }
 
-    @RequestMapping(value = "/scripts/{id}/detail",
+    @RequestMapping(value = "/scripts/{id}/status",
             method = RequestMethod.GET, produces = "application/hal+json")
     @ResponseBody
     public PersistentEntityResource viewOne(@PathVariable("id") Long id,
                                             PersistentEntityResourceAssembler asm) {
-        return asm.toFullResource(scriptProccessingService.detail(id));
+        return asm.toFullResource(scriptProccessingService.status(id));
     }
 
     @RequestMapping(value = "/scripts/{id}/terminate",

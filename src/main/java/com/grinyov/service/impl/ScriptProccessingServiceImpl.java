@@ -34,10 +34,10 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     @Override
-    public Script detail(Long id) {
+    public Script status(Long id) {
         Script script = scriptRepository.findOne(id);
         logger.info("script " + script.getId() +
-                " result: " + script.getResult());
+                " status: " + script.getStatus());
         return scriptRepository.save(script);
     }
 
@@ -52,6 +52,12 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     public String viewBody(Long id) {
         Script script = scriptRepository.findOne(id);
         return script.getScript();
+    }
+
+    @Override
+    public String viewDetail(Long id) {
+        Script script = scriptRepository.findOne(id);
+        return script.getResult();
     }
 
 }

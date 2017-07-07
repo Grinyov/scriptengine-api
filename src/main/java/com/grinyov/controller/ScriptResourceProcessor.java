@@ -24,7 +24,7 @@ public class ScriptResourceProcessor implements ResourceProcessor<Resource<Scrip
         resource.add(linkTo(methodOn(ScriptResourceController.class).
                 perform(script.getId(), null)).withRel("running"));
         resource.add(linkTo(methodOn(ScriptResourceController.class).
-                viewOne(script.getId(), null)).withRel("detail"));
+                viewOne(script.getId(), null)).withRel("status"));
         resource.add(linkTo(methodOn(ScriptResourceController.class).
                 terminateOne(script.getId(), null)).withRel("terminate"));
 
