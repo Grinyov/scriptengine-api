@@ -46,25 +46,25 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         return engine;
     }
 
-    public boolean compileScript(String script, ScriptEngine engine) {
-        try {
-            ((Compilable) engine).compile(script);
-            logger.debug("Script compiled successful. :-) \n");
-            return true;
-        } catch (ScriptException e) {
-            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(");
-            return false;
-        }
-    }
+//    public boolean compileScript(String script, ScriptEngine engine) {
+//        try {
+//            ((Compilable) engine).compile(script);
+//            logger.debug("Script compiled successful. :-) \n");
+//            return true;
+//        } catch (ScriptException e) {
+//            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(");
+//            return false;
+//        }
+//    }
 
     public void executeScript(Script script) throws ExecutionException {
 
         ScriptEngine engine = getEngine();
 
-        if (!compileScript(script.getScript(), engine)) {
-            logger.error("The script can not compile");
-            throw new FailedScriptCompilationException("script compiled unsuccessful!");
-        }
+//        if (!compileScript(script.getScript(), engine)) {
+//            logger.error("The script can not compile");
+//            throw new FailedScriptCompilationException("script compiled unsuccessful!");
+//        }
 
         StringWriter stringWriter = new StringWriter();
 //        engine.getContext().setWriter(stringWriter);

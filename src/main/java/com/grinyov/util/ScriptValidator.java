@@ -13,18 +13,15 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
- * Created by vgrinyov on 08.07.17.
+ * Created by vgrinyov
  */
 public class ScriptValidator implements Validator {
 
     private static final Logger logger = Logger.getLogger(ScriptValidator.class);
 
-    @Value("${engine.name}")
-    private String engineName;
-
     public ScriptEngine getEngine() {
         ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName(engineName);
+        ScriptEngine engine = factory.getEngineByName("nashorn");
         logger.debug("Engine was created");
         return engine;
     }
