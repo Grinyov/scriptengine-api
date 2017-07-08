@@ -49,8 +49,7 @@ public class ScriptValidator implements Validator {
 
         if (!compileScript(script.getScript(), engine)) {
             logger.error("The script can not compile");
-            errors.rejectValue("script", "Script.script.compile.failed", "Еhe script did not compile");
-            throw new FailedScriptCompilationException("script compiled unsuccessful!");
+            errors.rejectValue("script", "Script.script.compile.failed", "The script did not compile");
         }
     }
 }

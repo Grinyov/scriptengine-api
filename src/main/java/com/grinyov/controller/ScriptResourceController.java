@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by vgrinyov.
@@ -44,4 +46,10 @@ public class ScriptResourceController {
         return asm.toFullResource(scriptProccessingService.terminate(id));
     }
 
+     @ExceptionHandler(Exception.class)
+    private ResponseEntity<Object> exceptionHandler(Exception e) {
+        Map<String,String> responseBody = new HashMap<>();
+        responseBody.put("message", e.getMessage());
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
 }

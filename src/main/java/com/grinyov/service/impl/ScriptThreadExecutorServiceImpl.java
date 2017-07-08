@@ -5,6 +5,7 @@ import com.grinyov.exception.FailedScriptCompilationException;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptThreadExecutorService;
+import jdk.nashorn.internal.ir.IfNode;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +68,6 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
 //        }
 
         StringWriter stringWriter = new StringWriter();
-//        engine.getContext().setWriter(stringWriter);
 
         try {
             engine.getContext().setWriter(stringWriter);
@@ -113,6 +113,11 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             logger.info("the task is terminated. " + Thread.currentThread() +
                     " is managed " + executor.toString() + " is shutdown!");
             executor.shutdown();
+            if(!executor.isShutdown()){
+                executor.shutdownNow();
+            }
+            script.setStatus(Script.Status.FAILED);
+            scriptRepository.save(script);
         } catch (InterruptedException e) {
             logger.error("script shutdown failed ", e);
         }
