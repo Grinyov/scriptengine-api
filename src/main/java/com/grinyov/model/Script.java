@@ -15,6 +15,9 @@ public class Script implements Identifiable<Long> {
     @GeneratedValue
     private Long id;
 
+    @Version
+    private Integer version;
+
     @Column(nullable = false)
     private String script;
 

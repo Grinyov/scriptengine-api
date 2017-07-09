@@ -6,7 +6,9 @@ import org.springframework.data.rest.core.event.ValidatingRepositoryEventListene
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
 /**
- * Created by vgrinyov
+ * Application additional configuration
+ *
+ * @author vgrinyov
  */
 @Configuration
 public class AppConfig {
@@ -18,6 +20,5 @@ public class AppConfig {
             validatingListener.addValidator("beforeCreate", new ScriptValidator());
         }
     }
-
 
 }

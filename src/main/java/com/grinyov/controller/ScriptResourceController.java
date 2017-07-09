@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by vgrinyov.
+ *  Controller for handling of script
+ *
+ * @author vgrinyov
  */
 @RepositoryRestController
 public class ScriptResourceController {
