@@ -104,6 +104,7 @@ public class ScriptResourceControllerTest {
     @Test
     public void setScriptById() throws Exception {
         Script script = new Script();
+        script.setId(1L);
         script.setScript("print('task1')");
         given(this.scriptRepository.findOne(1L)).willReturn(script);
 
@@ -111,16 +112,8 @@ public class ScriptResourceControllerTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     public void perform() throws Exception {
-
-        Script script = script();//new Script();
-        script.setScript("print('task1')");
-        given(this.scriptProccessingService.perform(1L)).willReturn(script);
-        mockMvc.perform(put("/scripts/" + 1L + "/running")
-                .content("print('task1')"))
-                .andExpect(status().isOk());
 
     }
 
