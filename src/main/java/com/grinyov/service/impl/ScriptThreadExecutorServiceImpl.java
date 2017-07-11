@@ -98,13 +98,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         executor.submit(() -> {
             try {
                 executeScript(script);
-//                if (script.getStatus() == Script.Status.DONE){
-//                    executor.awaitTermination(timeout, TimeUnit.SECONDS);
-//                    logger.info("the task is terminated. " + Thread.currentThread() +
-//                            " is managed " + executor.toString() + " is shutdown!");
-//                    executor.shutdown();
-//                }
-            } catch (ExecutionException /*| InterruptedException*/ e) {
+            } catch (ExecutionException e) {
                 logger.error("script executed failed ", e);
             }
         });
