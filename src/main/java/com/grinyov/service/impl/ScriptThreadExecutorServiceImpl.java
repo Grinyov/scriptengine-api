@@ -40,7 +40,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     private ScriptRepository scriptRepository;
 
 
-    public ScriptEngine getEngine() {
+    private ScriptEngine getEngine() {
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName(engineName);
         logger.debug("Engine was created");
@@ -58,7 +58,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
 //        }
 //    }
 
-    public void executeScript(Script script) throws ExecutionException {
+    private void executeScript(Script script) throws ExecutionException {
 
         ScriptEngine engine = getEngine();
 
@@ -74,8 +74,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             script.setStatus(Script.Status.RUNNING);
             scriptRepository.save(script);
             engine.eval(script.getScript());
-            logger.info("script " + script.getId() + " status: " + script.getStatus());
-            //check 1
+            //logger.info("script " + script.getId() + " status: " + script.getStatus());
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
             script.setStatus(Script.Status.DONE);
@@ -99,7 +98,13 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         executor.submit(() -> {
             try {
                 executeScript(script);
-            } catch (ExecutionException e) {
+//                if (script.getStatus() == Script.Status.DONE){
+//                    executor.awaitTermination(timeout, TimeUnit.SECONDS);
+//                    logger.info("the task is terminated. " + Thread.currentThread() +
+//                            " is managed " + executor.toString() + " is shutdown!");
+//                    executor.shutdown();
+//                }
+            } catch (ExecutionException /*| InterruptedException*/ e) {
                 logger.error("script executed failed ", e);
             }
         });
@@ -113,13 +118,14 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             logger.info("the task is terminated. " + Thread.currentThread() +
                     " is managed " + executor.toString() + " is shutdown!");
             executor.shutdown();
+        } catch (InterruptedException e) {
+            logger.error("script shutdown failed ", e);
+        } finally {
             if(!executor.isShutdown()){
                 executor.shutdownNow();
             }
             script.setStatus(Script.Status.FAILED);
             scriptRepository.save(script);
-        } catch (InterruptedException e) {
-            logger.error("script shutdown failed ", e);
         }
     }
 }
