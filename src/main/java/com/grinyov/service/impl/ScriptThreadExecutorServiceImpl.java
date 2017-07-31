@@ -91,10 +91,10 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     public void terminateTask(Script script) {
         ExecutorService executor = executors.get(script.getId());
         try {
-            executor.awaitTermination(timeout, TimeUnit.SECONDS);
+            executor.shutdown();
             logger.info("the task is terminated. " + Thread.currentThread() +
                     " is managed " + executor.toString() + " is shutdown!");
-            executor.shutdown();
+            executor.awaitTermination(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             logger.error("script shutdown failed ", e);
         } finally {
