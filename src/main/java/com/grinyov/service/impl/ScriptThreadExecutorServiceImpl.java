@@ -32,6 +32,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
 //    private String engineName;
 
     private Map<Long, ExecutorService> executors = new ConcurrentHashMap<>();
+    private Map<Long, Thread > tasks = new ConcurrentHashMap<>();
 
     @Autowired
     private ScriptRepository scriptRepository;
@@ -77,33 +78,58 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     public void runTask(Script script) {
 
         //ExecutorService executor = Executors.newSingleThreadExecutor();
-        ExecutorService executor = Executors.newWorkStealingPool();
-        executors.put(script.getId(), executor);
-        executor.submit(() -> {
+        Runnable runnable = () -> {
+
+            boolean stop = false;
+
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 executeScript(script);
+                return;
             } catch (ExecutionException e) {
                 logger.error("script executed failed ", e);
+                Thread.currentThread().interrupt();
             }
-        });
+          }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+        tasks.put(script.getId(), thread);
+
+
+//        ExecutorService executor = Executors.newWorkStealingPool();
+//        executors.put(script.getId(), executor);
+//        executor.submit(() -> {
+//            try {
+//                executeScript(script);
+//            } catch (ExecutionException e) {
+//                logger.error("script executed failed ", e);
+//            }
+//        });
     }
 
     @Override
     public void terminateTask(Script script) {
-        ExecutorService executor = executors.get(script.getId());
-        try {
-            executor.shutdown();
-            logger.info("the task is terminated. " + Thread.currentThread() +
-                    " is managed " + executor.toString() + " is shutdown!");
-            executor.awaitTermination(timeout, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.error("script shutdown failed ", e);
-        } finally {
-            if(!executor.isShutdown()){
-                executor.shutdownNow();
-            }
-            script.setStatus(Script.Status.FAILED);
-            scriptRepository.save(script);
-        }
+//        ExecutorService executor = executors.get(script.getId());
+//        try {
+//            executor.shutdown();
+//            logger.info("the task is terminated. " + Thread.currentThread() +
+//                    " is managed " + executor.toString() + " is shutdown!");
+//            executor.awaitTermination(timeout, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            logger.error("script shutdown failed ", e);
+//        } finally {
+//            if(!executor.isShutdown()){
+//                executor.shutdownNow();
+//            }
+//            script.setStatus(Script.Status.FAILED);
+//            scriptRepository.save(script);
+//        }
+        Thread currentThread = tasks.get(script.getId());
+        currentThread.interrupt();
+
+        logger.info("the task is terminated. " + currentThread.getName() +
+                   " is shutdown!");
     }
 }
