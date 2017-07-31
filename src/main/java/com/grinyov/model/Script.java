@@ -1,8 +1,10 @@
 package com.grinyov.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.hateoas.Identifiable;
 import javax.persistence.*;
+import javax.script.CompiledScript;
 
 /**
  * Created by vgrinyov.
@@ -39,5 +41,7 @@ public class Script implements Identifiable<Long> {
     //@Column(nullable = false)
     private String result;
 
-    //public String set
+    @Transient
+    @JsonIgnore
+    private CompiledScript compiledScript;
 }

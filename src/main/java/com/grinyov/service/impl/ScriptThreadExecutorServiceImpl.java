@@ -55,6 +55,8 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             engine.getContext().setWriter(stringWriter);
             script.setStatus(Script.Status.RUNNING);
             scriptRepository.save(script);
+            logger.info(script.getStatus());
+            //script.getCompiledScript().eval();
             engine.eval(script.getScript());
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
@@ -77,7 +79,6 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         //ExecutorService executor = Executors.newSingleThreadExecutor();
         ExecutorService executor = Executors.newWorkStealingPool();
         executors.put(script.getId(), executor);
-        //final CompletableFuture<String> future = CompletableFuture.supplyAsync(this::calculate, executorService);
         executor.submit(() -> {
             try {
                 executeScript(script);

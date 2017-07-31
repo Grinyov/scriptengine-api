@@ -1,16 +1,11 @@
 package com.grinyov.util;
 
-import com.grinyov.exception.FailedScriptCompilationException;
 import com.grinyov.model.Script;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import javax.script.Compilable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import javax.script.*;
 
 /**
  * Created by vgrinyov
@@ -19,17 +14,18 @@ public class ScriptValidator implements Validator {
 
     private static final Logger logger = Logger.getLogger(ScriptValidator.class);
 
-    public ScriptEngine getEngine() {
+    private ScriptEngine getEngine() {
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("nashorn");
         logger.debug("Engine was created");
         return engine;
     }
 
-    public boolean compileScript(String script, ScriptEngine engine) {
+    private boolean compileScript(Script script, ScriptEngine engine) {
         try {
-            ((Compilable) engine).compile(script);
+            CompiledScript compiledScript = ((Compilable) engine).compile(script.getScript());
             logger.debug("Script compiled successful. :-) \n");
+            script.setCompiledScript(compiledScript);
             return true;
         } catch (ScriptException e) {
             logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(");
@@ -47,7 +43,7 @@ public class ScriptValidator implements Validator {
         final Script script = (Script) target;
         ScriptEngine engine = getEngine();
 
-        if (!compileScript(script.getScript(), engine)) {
+        if (!compileScript(script, engine)) {
             logger.error("The script can not compile");
             errors.rejectValue("script", "Script.script.compile.failed", "The script did not compile");
         }
