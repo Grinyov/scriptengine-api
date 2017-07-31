@@ -1,17 +1,14 @@
 package com.grinyov.service.impl;
 
 import com.grinyov.dao.ScriptRepository;
-import com.grinyov.exception.FailedScriptCompilationException;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptThreadExecutorService;
-import jdk.nashorn.internal.ir.IfNode;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.script.Compilable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -47,26 +44,11 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         return engine;
     }
 
-//    public boolean compileScript(String script, ScriptEngine engine) {
-//        try {
-//            ((Compilable) engine).compile(script);
-//            logger.debug("Script compiled successful. :-) \n");
-//            return true;
-//        } catch (ScriptException e) {
-//            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(");
-//            return false;
-//        }
-//    }
+
 
     private void executeScript(Script script) throws ExecutionException {
 
         ScriptEngine engine = getEngine();
-
-//        if (!compileScript(script.getScript(), engine)) {
-//            logger.error("The script can not compile");
-//            throw new FailedScriptCompilationException("script compiled unsuccessful!");
-//        }
-
         StringWriter stringWriter = new StringWriter();
 
         try {
@@ -74,7 +56,6 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             script.setStatus(Script.Status.RUNNING);
             scriptRepository.save(script);
             engine.eval(script.getScript());
-            //logger.info("script " + script.getId() + " status: " + script.getStatus());
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
             script.setStatus(Script.Status.DONE);
@@ -93,8 +74,10 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     @Override
     public void runTask(Script script) {
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        //ExecutorService executor = Executors.newSingleThreadExecutor();
+        ExecutorService executor = Executors.newWorkStealingPool();
         executors.put(script.getId(), executor);
+        //final CompletableFuture<String> future = CompletableFuture.supplyAsync(this::calculate, executorService);
         executor.submit(() -> {
             try {
                 executeScript(script);
