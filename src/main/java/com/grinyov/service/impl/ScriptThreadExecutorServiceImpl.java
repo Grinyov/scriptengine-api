@@ -28,8 +28,8 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     @Value("${timeout}")
     private int timeout;
 
-    @Value("${engine.name}")
-    private String engineName;
+//    @Value("${engine.name}")
+//    private String engineName;
 
     private Map<Long, ExecutorService> executors = new ConcurrentHashMap<>();
 
@@ -37,27 +37,27 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     private ScriptRepository scriptRepository;
 
 
-    private ScriptEngine getEngine() {
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName(engineName);
-        logger.debug("Engine was created");
-        return engine;
-    }
+//    private ScriptEngine getEngine() {
+//        ScriptEngineManager factory = new ScriptEngineManager();
+//        ScriptEngine engine = factory.getEngineByName(engineName);
+//        logger.debug("Engine was created");
+//        return engine;
+//    }
 
 
 
     private void executeScript(Script script) throws ExecutionException {
 
-        ScriptEngine engine = getEngine();
+        //ScriptEngine engine = getEngine();
         StringWriter stringWriter = new StringWriter();
 
         try {
-            engine.getContext().setWriter(stringWriter);
+            //engine.getContext().setWriter(stringWriter);
             script.setStatus(Script.Status.RUNNING);
             scriptRepository.save(script);
             logger.info(script.getStatus());
-            //script.getCompiledScript().eval();
-            engine.eval(script.getScript());
+            script.getCompiledScript().eval();
+            //engine.eval(script.getScript());
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
             script.setStatus(Script.Status.DONE);
