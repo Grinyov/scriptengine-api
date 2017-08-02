@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by vgrinyov
+ * @author vgrinyov
  */
 @Component
 @RepositoryEventHandler
@@ -17,8 +17,11 @@ public class ScriptEventHandler {
     @Autowired
     private ScriptProccessingService scriptProccessingService;
 
+    /**
+     * Handle created scripts and running them
+     */
     @HandleAfterCreate
-    public void scriptRunning(Script script){
+    public void scriptRunning(Script script) {
         scriptProccessingService.perform(script.getId());
     }
 }

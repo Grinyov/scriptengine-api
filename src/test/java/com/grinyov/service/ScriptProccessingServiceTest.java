@@ -49,12 +49,11 @@ public class ScriptProccessingServiceTest {
 
     }
 
-
     @Test
     public void performNormal() throws Exception {
         scriptProccessingService.perform(1L);
-        Thread.sleep(5000);
-        assertEquals(Script.Status.DONE, scriptRepositoryMock.findOne(1L).getStatus());
+        Thread.sleep(200);
+        assertEquals(Script.Status.RUNNING, scriptRepositoryMock.findOne(1L).getStatus());
     }
 
     @Test
@@ -67,12 +66,6 @@ public class ScriptProccessingServiceTest {
     @Test
     public void detail() throws Exception {
         assertNotNull(scriptRepositoryMock.findOne(1L).getResult());
-    }
-
-    @Test
-    public void terminate() throws Exception {
-        scriptProccessingService.terminate(1L);
-        assertNotEquals(Script.Status.RUNNING, scriptRepositoryMock.findOne(1L));
     }
 
 }

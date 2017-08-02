@@ -10,9 +10,9 @@ import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 
 /**
- * Application additional configuration
+ *  Application additional configuration
  *
- * @author vgrinyov
+ *  @author vgrinyov
  */
 @Configuration
 public class AppConfig {
@@ -27,7 +27,7 @@ public class AppConfig {
 
     @Bean
     public CurieProvider curieProvider() {
-        return new DefaultCurieProvider("api", new UriTemplate("http://localhost:8080/docs/api-guide.html#{rel}"));
+        return new DefaultCurieProvider("/", new UriTemplate("http://localhost:8080/asciidoc/api-guide.html#{rel}"));
     }
 
 }

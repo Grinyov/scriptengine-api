@@ -4,6 +4,7 @@ import com.grinyov.ScriptengineApiApplication;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptProccessingService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +29,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,16 +61,23 @@ public class ScriptResourceControllerTest {
     @Rule
     public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("docs/api-guide.html");
 
+    private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+            MediaType.APPLICATION_JSON.getSubtype(),
+            Charset.forName("utf8"));
+
     private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
 
-    @Before
-    public void setUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-                .apply(documentationConfiguration(this.restDocumentation))
-                .build();
+    @Autowired
+    void setConverters(HttpMessageConverter<?>[] converters) {
+
+        HttpMessageConverter mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream().filter(
+                hmc -> hmc instanceof MappingJackson2HttpMessageConverter).findAny().get();
+
+        Assert.assertNotNull("the JSON message converter must not be null",
+                mappingJackson2HttpMessageConverter);
     }
 
     @Autowired
@@ -74,25 +86,48 @@ public class ScriptResourceControllerTest {
     @Autowired
     private ScriptRepository scriptRepository;
 
+    @Before
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+                .apply(documentationConfiguration(this.restDocumentation))
+                .build();
+    }
+
     @Test
     public void getMainPage() throws Exception {
-        this.mockMvc.perform(get("/")).andExpect(status().isOk())
+        mockMvc.perform(get("/")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("_links\"")));
     }
 
     @Test
-    public void getScripts() throws Exception{
-
-        //given(scriptRepository.findAll()).willReturn(Collections.singletonList(script()));
-
+    public void getScripts() throws Exception {
         mockMvc.perform(get("/scripts"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
+    public void scriptNotFound() throws Exception {
+        mockMvc.perform(post("/scripts/1000")
+                .contentType(contentType))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void createScript() throws Exception {
-        Script script =  script();
+        mockMvc.perform(post("/scripts")
+				.param("id", "1" )
+				.param("script","print('Hello from task1')")
+				.param("status","NEW")
+                .accept(MediaTypes.HAL_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+		.andExpect(status().isOk());
+    }
+
+    /*@Test
+    public void createScript() throws Exception {
+        Script script = script();
         String requestBody = saveRequestJsonString(script);
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
@@ -128,7 +163,7 @@ public class ScriptResourceControllerTest {
                         fieldWithPath("result").type(JsonFieldType.STRING).description("Result of running of the script")
 
                 )));
-    }
+    }*/
 
 //    @Test
 //    public void setScriptById() throws Exception {
@@ -143,7 +178,9 @@ public class ScriptResourceControllerTest {
 
     @Test
     public void perform() throws Exception {
-
+        mockMvc.perform(post("/scripts/1")
+                .contentType(contentType))
+                .andExpect(status().isOk());
     }
 
     @Test

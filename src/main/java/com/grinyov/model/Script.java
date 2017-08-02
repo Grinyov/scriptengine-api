@@ -3,11 +3,12 @@ package com.grinyov.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.hateoas.Identifiable;
+
 import javax.persistence.*;
 import javax.script.CompiledScript;
 
 /**
- * Created by vgrinyov.
+ * @author vgrinyov
  */
 @Entity
 @Data
@@ -17,8 +18,9 @@ public class Script implements Identifiable<Long> {
     @GeneratedValue
     private Long id;
 
-//    @Version
-//    private Integer version;
+   /* // for http caching
+    @Version
+    private Integer version;*/
 
     @Column(nullable = false)
     private String script;
@@ -38,7 +40,6 @@ public class Script implements Identifiable<Long> {
         FAILED
     }
 
-    //@Column(nullable = false)
     private String result;
 
     @Transient

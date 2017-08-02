@@ -3,9 +3,9 @@ package com.grinyov.service;
 import com.grinyov.model.Script;
 
 /**
- * Created by vgrinyov.
- * <p>
  * The service for starting, detailing of script and finishing the script processing
+ *
+ * @author vgrinyov
  */
 
 public interface ScriptProccessingService {

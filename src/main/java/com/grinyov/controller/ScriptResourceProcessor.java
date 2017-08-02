@@ -1,18 +1,14 @@
 package com.grinyov.controller;
 
-import com.grinyov.controller.ScriptResourceController;
 import com.grinyov.model.Script;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.stereotype.Component;
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
- * Created by vgrinyov.
+ * @author vgrinyov
  */
 @Component
 public class ScriptResourceProcessor implements ResourceProcessor<Resource<Script>> {

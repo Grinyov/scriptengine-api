@@ -8,7 +8,10 @@ import org.springframework.validation.Validator;
 import javax.script.*;
 
 /**
- * Created by vgrinyov
+ * Check that the added scripts are compiled
+ * and saved compiled script to field compiledScript
+ *
+ * @author vgrinyov
  */
 public class ScriptValidator implements Validator {
 

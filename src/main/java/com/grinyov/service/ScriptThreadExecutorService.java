@@ -3,9 +3,9 @@ package com.grinyov.service;
 import com.grinyov.model.Script;
 
 /**
- * Created by vgrinyov
- * <p>
  * The service for starting and Interrupting threads
+ *
+ * @author vgrinyov
  */
 public interface ScriptThreadExecutorService {
 
@@ -18,6 +18,7 @@ public interface ScriptThreadExecutorService {
 
     /**
      * Interrupts thread
+     * !!! Warning this method used depricated mechanism stopping thread
      *
      * @param script
      */
