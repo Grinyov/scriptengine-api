@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,6 +40,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -76,6 +78,16 @@ public class ScriptResourceControllerTest {
     public void getMainPage() throws Exception {
         this.mockMvc.perform(get("/")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("_links\"")));
+    }
+
+    @Test
+    public void getScripts() throws Exception{
+
+        //given(scriptRepository.findAll()).willReturn(Collections.singletonList(script()));
+
+        mockMvc.perform(get("/scripts"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
