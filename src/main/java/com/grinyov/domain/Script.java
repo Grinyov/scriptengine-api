@@ -89,6 +89,14 @@ public class Script implements Serializable {
         this.result = result;
     }
 
+    public CompiledScript getCompiledScript() {
+        return compiledScript;
+    }
+
+    public void setCompiledScript(CompiledScript compiledScript) {
+        this.compiledScript = compiledScript;
+    }
+
     public User getUser() {
         return user;
     }
