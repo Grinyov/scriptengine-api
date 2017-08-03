@@ -2,10 +2,12 @@ package com.grinyov.domain;
 
 
 import javax.persistence.*;
+import javax.script.CompiledScript;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grinyov.domain.enumeration.Status;
 
 /**
@@ -32,6 +34,10 @@ public class Script implements Serializable {
 
     @Column(name = "result")
     private String result;
+
+    @Transient
+    @JsonIgnore
+    private CompiledScript compiledScript;
 
     @ManyToOne
     private User user;
