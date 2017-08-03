@@ -1,0 +1,11 @@
+{
+    "scriptengineApiApp": {
+        "Status" : {
+            "null": "",
+            "NEW": "NEW",
+            "RUNNING": "RUNNING",
+            "DONE": "DONE",
+            "FAILED": "FAILED"
+        }
+    }
+}

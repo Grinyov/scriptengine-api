@@ -1,0 +1,37 @@
+
+<div *ngIf="script">
+    <h2><span jhiTranslate="scriptengineApiApp.script.detail.title">Script</span> {{script.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="scriptengineApiApp.script.script">Script</span></dt>
+        <dd>
+            <span>{{script.script}}</span>
+        </dd>
+        <dt><span jhiTranslate="scriptengineApiApp.script.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'scriptengineApiApp.Status.' + script.status}}">{{script.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="scriptengineApiApp.script.result">Result</span></dt>
+        <dd>
+            <span>{{script.result}}</span>
+        </dd>
+        <dt><span jhiTranslate="scriptengineApiApp.script.user">User</span></dt>
+        <dd>
+            {{script.user?.login}}
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'script/'+ script.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

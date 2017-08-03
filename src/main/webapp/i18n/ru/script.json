@@ -1,0 +1,24 @@
+{
+    "scriptengineApiApp": {
+        "script" : {
+            "home": {
+                "title": "Scripts",
+                "createLabel": "Создать новый Script",
+                "createOrEditLabel": "Создать или отредактировать Script"
+            },
+            "created": "Новый Script создан с идентификатором {{ param }}",
+            "updated": "Script обновлен с идентификатором {{ param }}",
+            "deleted": "Script удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Script {{ id }}?"
+            },
+            "detail": {
+                "title": "Script"
+            },
+            "script": "Script",
+            "status": "Status",
+            "result": "Result",
+            "user": "User"
+        }
+    }
+}
