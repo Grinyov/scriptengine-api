@@ -92,11 +92,13 @@ public class ScriptServiceImpl implements ScriptService{
 
     @Override
     public String viewBody(Long id) {
-        return null;
+        Script script = scriptRepository.findOne(id);
+        return script.getScript();
     }
 
     @Override
     public String viewDetail(Long id) {
-        return null;
+        Script script = scriptRepository.findOne(id);
+        return script.getResult();
     }
 }
