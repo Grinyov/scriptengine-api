@@ -81,6 +81,10 @@ public class Script implements Serializable {
         return this;
     }
 
+    public void setResult(String result) {
+        this.result = result;
+    }
+
     @Transient
     @JsonIgnore
     private CompiledScript compiledScript;
@@ -91,10 +95,6 @@ public class Script implements Serializable {
 
     public void setCompiledScript(CompiledScript compiledScript) {
         this.compiledScript = compiledScript;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
     }
 
     public User getUser() {

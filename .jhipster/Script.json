@@ -31,7 +31,7 @@
             "fieldType": "String"
         }
     ],
-    "changelogDate": "20170804073730",
+    "changelogDate": "20170804093520",
     "dto": "no",
     "service": "serviceImpl",
     "entityTableName": "script",

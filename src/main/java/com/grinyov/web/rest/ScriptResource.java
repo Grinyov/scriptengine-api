@@ -3,12 +3,14 @@ package com.grinyov.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.grinyov.domain.Script;
 import com.grinyov.service.ScriptService;
+import com.grinyov.service.util.ScriptValidator;
 import com.grinyov.web.rest.util.HeaderUtil;
 import com.grinyov.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +38,9 @@ public class ScriptResource {
 
     private final ScriptService scriptService;
 
+    @Autowired
+    private ScriptValidator validator;
+
     public ScriptResource(ScriptService scriptService) {
         this.scriptService = scriptService;
     }
@@ -53,6 +58,9 @@ public class ScriptResource {
         log.debug("REST request to save Script : {}", script);
         if (script.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new script cannot already have an ID")).body(null);
+        }
+        if (!validator.validate(script)) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "cannotcompile", "A new script cannot compile")).body(null);
         }
         Script result = scriptService.save(script);
         return ResponseEntity.created(new URI("/api/scripts/" + result.getId()))
