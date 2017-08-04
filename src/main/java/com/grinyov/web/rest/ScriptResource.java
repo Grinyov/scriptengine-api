@@ -132,4 +132,18 @@ public class ScriptResource {
         scriptService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * GET  /scripts/:id/body : get the body of "id" script.
+     *
+     * @param id the id of the script to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the script, or with status 404 (Not Found)
+     */
+    @GetMapping("/scripts/{id}/body")
+    @Timed
+    public ResponseEntity<String> getScriptBody(@PathVariable Long id) {
+        log.debug("REST request to get body of Script : {}", id);
+        Script script = scriptService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(script.getScript()));
+    }
 }
