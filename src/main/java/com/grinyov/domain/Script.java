@@ -2,10 +2,12 @@ package com.grinyov.domain;
 
 
 import javax.persistence.*;
+import javax.script.CompiledScript;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grinyov.domain.enumeration.Status;
 
 /**
@@ -77,6 +79,18 @@ public class Script implements Serializable {
     public Script result(String result) {
         this.result = result;
         return this;
+    }
+
+    @Transient
+    @JsonIgnore
+    private CompiledScript compiledScript;
+
+    public CompiledScript getCompiledScript() {
+        return compiledScript;
+    }
+
+    public void setCompiledScript(CompiledScript compiledScript) {
+        this.compiledScript = compiledScript;
     }
 
     public void setResult(String result) {
