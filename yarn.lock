@@ -943,8 +943,8 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000709"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000709.tgz#0b600072b7cdbbf6336a8758b71b9ad03268ede2"
+  version "1.0.30000710"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000710.tgz#f03614ef04b76ba41232755b7d4e45d7cc1c13b8"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -1365,11 +1365,11 @@ connect@3.5.0:
     utils-merge "1.0.0"
 
 connect@^3.6.0:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/connect/-/connect-3.6.2.tgz#694e8d20681bfe490282c8ab886be98f09f42fe7"
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/connect/-/connect-3.6.3.tgz#f7320d46a25b4be7b483a2236517f24b1e27e301"
   dependencies:
-    debug "2.6.7"
-    finalhandler "1.0.3"
+    debug "2.6.8"
+    finalhandler "1.0.4"
     parseurl "~1.3.1"
     utils-merge "1.0.0"
 
@@ -1438,7 +1438,7 @@ core-object@^3.1.0:
   dependencies:
     chalk "^1.1.3"
 
-core-util-is@~1.0.0:
+core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
@@ -2506,9 +2506,9 @@ extract-zip@~1.5.0:
     mkdirp "0.5.0"
     yauzl "2.4.1"
 
-extsprintf@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.0.2.tgz#e1080e0658e300b06294990cc70e1502235fd550"
+extsprintf@1.3.0, extsprintf@^1.2.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.3.0.tgz#96918440e3041a7a414f8c52e3c574eb3c3e1e05"
 
 fancy-log@^1.1.0:
   version "1.3.0"
@@ -2651,11 +2651,11 @@ finalhandler@0.5.0:
     statuses "~1.3.0"
     unpipe "~1.0.0"
 
-finalhandler@1.0.3, finalhandler@~1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.0.3.tgz#ef47e77950e999780e86022a560e3217e0d0cc89"
+finalhandler@1.0.4, finalhandler@~1.0.3:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.0.4.tgz#18574f2e7c4b98b8ae3b230c21f201f31bdb3fb7"
   dependencies:
-    debug "2.6.7"
+    debug "2.6.8"
     encodeurl "~1.0.1"
     escape-html "~1.0.3"
     on-finished "~2.3.0"
@@ -4004,13 +4004,13 @@ jsonpointer@^4.0.0:
   resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-4.0.1.tgz#4fd92cb34e0e9db3c89c8622ecf51f9b978c6cb9"
 
 jsprim@^1.2.2:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.0.tgz#a3b87e40298d8c380552d8cc7628a0bb95a22918"
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.1.tgz#313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2"
   dependencies:
     assert-plus "1.0.0"
-    extsprintf "1.0.2"
+    extsprintf "1.3.0"
     json-schema "0.2.3"
-    verror "1.3.6"
+    verror "1.10.0"
 
 jstransform@^11.0.3:
   version "11.0.3"
@@ -7690,11 +7690,13 @@ vendors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/vendors/-/vendors-1.0.1.tgz#37ad73c8ee417fb3d580e785312307d274847f22"
 
-verror@1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/verror/-/verror-1.3.6.tgz#cff5df12946d297d2baaefaa2689e25be01c005c"
+verror@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/verror/-/verror-1.10.0.tgz#3a105ca17053af55d6e270c1f8288682e18da400"
   dependencies:
-    extsprintf "1.0.2"
+    assert-plus "^1.0.0"
+    core-util-is "1.0.2"
+    extsprintf "^1.2.0"
 
 vinyl-file@^2.0.0:
   version "2.0.0"

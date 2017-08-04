@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity Script.
     -->
-    <changeSet id="20170803084908-2" author="jhipster">
+    <changeSet id="20170804073730-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="script"
