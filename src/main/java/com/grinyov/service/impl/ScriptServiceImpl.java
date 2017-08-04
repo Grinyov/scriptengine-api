@@ -82,7 +82,10 @@ public class ScriptServiceImpl implements ScriptService{
 
     @Override
     public Script status(Long id) {
-        return null;
+        Script script = scriptRepository.findOne(id);
+        log.info("script " + script.getId() +
+            " status: " + script.getStatus());
+        return scriptRepository.save(script);
     }
 
     @Override
