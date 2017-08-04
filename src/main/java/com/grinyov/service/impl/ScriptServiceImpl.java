@@ -3,6 +3,7 @@ package com.grinyov.service.impl;
 import com.grinyov.service.ScriptService;
 import com.grinyov.domain.Script;
 import com.grinyov.repository.ScriptRepository;
+import com.grinyov.service.ScriptThreadExecutionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,8 +23,11 @@ public class ScriptServiceImpl implements ScriptService{
 
     private final ScriptRepository scriptRepository;
 
-    public ScriptServiceImpl(ScriptRepository scriptRepository) {
+    private final ScriptThreadExecutionService executionService;
+
+    public ScriptServiceImpl(ScriptRepository scriptRepository, ScriptThreadExecutionService executionService) {
         this.scriptRepository = scriptRepository;
+        this.executionService = executionService;
     }
 
     /**
@@ -77,7 +81,9 @@ public class ScriptServiceImpl implements ScriptService{
 
     @Override
     public Script perform(Long id) {
-        return null;
+        Script script = scriptRepository.findOne(id);
+        executionService.runTask(script);
+        return scriptRepository.save(script);
     }
 
     @Override
@@ -90,7 +96,9 @@ public class ScriptServiceImpl implements ScriptService{
 
     @Override
     public Script terminate(Long id) {
-        return null;
+        Script script = scriptRepository.findOne(id);
+        executionService.terminateTask(script);
+        return scriptRepository.save(script);
     }
 
     @Override

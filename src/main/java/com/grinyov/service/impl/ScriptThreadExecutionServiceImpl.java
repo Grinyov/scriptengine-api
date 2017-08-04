@@ -6,6 +6,7 @@ import com.grinyov.repository.ScriptRepository;
 import com.grinyov.service.ScriptThreadExecutionService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.script.ScriptException;
 import java.io.StringWriter;
@@ -16,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * @author vgrinyov
  */
+@Service
 public class ScriptThreadExecutionServiceImpl implements ScriptThreadExecutionService {
 
     private static final Logger log = Logger.getLogger(ScriptThreadExecutionServiceImpl.class);
