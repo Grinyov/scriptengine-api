@@ -74,4 +74,29 @@ public class ScriptServiceImpl implements ScriptService{
         log.debug("Request to delete Script : {}", id);
         scriptRepository.delete(id);
     }
+
+    @Override
+    public Script perform(Long id) {
+        return null;
+    }
+
+    @Override
+    public Script status(Long id) {
+        return null;
+    }
+
+    @Override
+    public Script terminate(Long id) {
+        return null;
+    }
+
+    @Override
+    public String viewBody(Long id) {
+        return null;
+    }
+
+    @Override
+    public String viewDetail(Long id) {
+        return null;
+    }
 }
