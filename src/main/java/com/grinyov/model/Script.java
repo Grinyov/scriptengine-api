@@ -22,8 +22,9 @@ public class Script implements Identifiable<Long> {
     @Version
     private Integer version;*/
 
-    // TODO consider using  @Basic(fetch = FetchType.LAZY) for body body and result (output) properties
-    
+    // TODO(processed) consider using  @Basic(fetch = FetchType.LAZY) for body body and result (output) properties
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(nullable = false)
     private String body;
 
@@ -32,7 +33,8 @@ public class Script implements Identifiable<Long> {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
-
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     private String result;
 
     public Script() {
