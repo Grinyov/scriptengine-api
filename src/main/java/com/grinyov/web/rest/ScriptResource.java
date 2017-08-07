@@ -175,4 +175,38 @@ public class ScriptResource {
         Script script = scriptService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(script.getStatus()));
     }
+
+    /**
+     * PUT  /scripts/:id/run : Running of "id" script.
+     *
+     * @param script the script to running
+     * @return the ResponseEntity with status 200 (OK) and with body the running script,
+     * or with status 400 (Bad Request) if the script cannot running,
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/scripts/{id}/run")
+    @Timed
+    public ResponseEntity<Script> runScript(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to run Script : {}", id);
+        Script result = scriptService.perform(id);
+        return ResponseEntity.ok()
+            .body(result);
+    }
+
+    /**
+     * PUT  /scripts/:id/terminate : terminate of running of "id" script.
+     *
+     * @param script the script to terminate
+     * @return the ResponseEntity with status 200 (OK) and with body the running script,
+     * or with status 400 (Bad Request) if the script cannot running,
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/scripts/{id}/terminate")
+    @Timed
+    public ResponseEntity<Script> terminateScript(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to run Script : {}", id);
+        Script result = scriptService.terminate(id);
+        return ResponseEntity.ok()
+            .body(result);
+    }
 }
