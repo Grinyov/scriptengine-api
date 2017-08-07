@@ -2,6 +2,7 @@ package com.grinyov.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.grinyov.domain.Script;
+import com.grinyov.domain.enumeration.Status;
 import com.grinyov.service.ScriptService;
 import com.grinyov.service.util.ScriptValidator;
 import com.grinyov.web.rest.util.HeaderUtil;
@@ -159,5 +160,19 @@ public class ScriptResource {
         log.debug("REST request to get result of running of Script : {}", id);
         Script script = scriptService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(script.getResult()));
+    }
+
+    /**
+     * GET  /scripts/:id/status : get the status of "id" script.
+     *
+     * @param id the id of the script to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with status the script, or with status 404 (Not Found)
+     */
+    @GetMapping("/scripts/{id}/status")
+    @Timed
+    public ResponseEntity<Status> getScriptStatus(@PathVariable Long id) {
+        log.debug("REST request to get status of Script : {}", id);
+        Script script = scriptService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(script.getStatus()));
     }
 }
