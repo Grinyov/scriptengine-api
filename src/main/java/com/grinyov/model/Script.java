@@ -11,6 +11,9 @@ import javax.script.CompiledScript;
  * @author vgrinyov
  */
 @Entity
+// TODO Do Lombok generated hashcode and equals implementations match requirements of JPA entities?
+// that's one of reasons I'd not recommend using Lombok. Another reason is that it does not play well with other annotation processors, like aspectj
+// https://docs.jboss.org/hibernate/stable/core.old/reference/en/html/persistent-classes-equalshashcode.html
 @Data
 public class Script implements Identifiable<Long> {
 
@@ -22,6 +25,8 @@ public class Script implements Identifiable<Long> {
     @Version
     private Integer version;*/
 
+    // TODO consider using  @Basic(fetch = FetchType.LAZY) for script body and result (output) properties
+    
     @Column(nullable = false)
     private String script;
 

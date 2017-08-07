@@ -31,6 +31,7 @@ public class ScriptViewController {
     }
 
     /**
+     * TODO why is it named /detail, not result (inconsistent naming)?
      * Create resource for viewing result of performing script
      */
 

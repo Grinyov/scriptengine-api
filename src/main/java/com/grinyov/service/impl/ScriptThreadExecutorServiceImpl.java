@@ -1,5 +1,6 @@
 package com.grinyov.service.impl;
 
+import com.grinyov.controller.ScriptResourceController;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
@@ -32,8 +33,10 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     @Value("${timeout}")
     private int timeout;
 
+    // TODO unused, remove
     private Map<Long, ExecutorService> executors = new ConcurrentHashMap<>();
     private Map<Long, Thread> tasks = new ConcurrentHashMap<>();
+    // TODO unused, remove
     private Map<Long, Future> futures = new ConcurrentHashMap<>();
 
     @Autowired
@@ -43,19 +46,24 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         StringWriter stringWriter = new StringWriter();
         try {
             script.setStatus(Script.Status.RUNNING);
+            // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved 
             scriptRepository.save(script);
             logger.info(script.getStatus());
             script.getCompiledScript().eval();
+            // TODO result is not saved during script execution, as it was requested, only after script completion
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
             script.setStatus(Script.Status.DONE);
+            // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved 
             scriptRepository.save(script);
             logger.info("script executed successful. Status: " + script.getStatus() + ". Detail:  " + script.getResult());
         } catch (ScriptException e) {
             script.setStatus(Script.Status.FAILED);
             script.setResult("Failed to run the script: " + stringWriter);
+            // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved 
             scriptRepository.save(script);
             logger.error("The script can not execute", e);
+            // TODO important error information is lost, including stack trace!!!
             throw new InvalidScriptStateException("script executed unsuccessful!");
         }
 
@@ -65,11 +73,12 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     public void runTask(Script script) {
 
         Runnable runnable = () -> {
-
+            // TODO the below logic is meaningless? Or I don't understand its purpose
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     executeScript(script);
                     return;
+                    // TODO when execution exception can be thrown? In what thread?
                 } catch (ExecutionException e) {
                     logger.error("script executed failed ", e);
                     Thread.currentThread().interrupt();
@@ -81,6 +90,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         thread.start();
         tasks.put(script.getId(), thread);
 
+        // TODO why do we need an executor here?
         ExecutorService executor = Executors.newWorkStealingPool();
         executors.put(script.getId(), executor);
 
@@ -124,16 +134,22 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
 
         Thread currentThread = tasks.get(script.getId());
         currentThread.interrupt();
+        // TODO task may not be terminated
         logger.info("the task is terminated. " + currentThread.getName() +
                 " is shutdown!");
         tasks.remove(script.getId());
+        // TODO is status FAILED or TERMINATED ? FAILED means script completed due to its runtime exception
         script.setStatus(Script.Status.FAILED);
         scriptRepository.save(script);
         try {
+            // TODO meaningless
             currentThread.wait(500);
         } catch (InterruptedException e) {
+            // TODO InterruptedException may happened above try
+            // TODO Why do we throw this exception if it is an expected behavior?
             throw new InvalidScriptStateException(e.getMessage());
         } finally {
+            // TODO why this part is in finally block?
             if (currentThread.isAlive()) {
                 currentThread.stop();
                 logger.info("Thread was force stopped");
@@ -170,6 +186,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         }*/
     }
 
+    // TODO why exception handler here? It duplicates {@link ScriptResourceController#exceptionHandler}
     @ExceptionHandler(Exception.class)
     private ResponseEntity<Object> exceptionHandler(Exception e) {
         Map<String, String> responseBody = new HashMap<>();
