@@ -62,7 +62,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Override
     public String viewBody(Long id) {
         Script script = scriptRepository.findOne(id);
-        return script.getScript();
+        return script.getBody();
     }
 
     // TODO make this a repository method which selects only result property, not the entire entity

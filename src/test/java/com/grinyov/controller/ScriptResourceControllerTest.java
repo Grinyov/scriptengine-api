@@ -13,35 +13,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -140,7 +128,7 @@ public class ScriptResourceControllerTest {
         resultActions.andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost:8080/scripts/" + createdScript.getId()))
                 .andExpect(jsonPath("$.id", is(createdScript.getId().intValue())))
-                .andExpect(jsonPath("$.script", is(createdScript.getScript())))
+                .andExpect(jsonPath("$.script", is(createdScript.getBody())))
                 .andExpect(jsonPath("$.status", is(createdScript.getStatus())))
                 .andExpect(jsonPath("$.result", is(createdScript.getResult())));
 
@@ -169,7 +157,7 @@ public class ScriptResourceControllerTest {
 //    public void setScriptById() throws Exception {
 //        Script script = new Script();
 //        script.setId(1L);
-//        script.setScript("print('task1')");
+//        script.setBody("print('task1')");
 //        given(this.scriptRepository.findOne(1L)).willReturn(script);
 //
 //        mockMvc.perform(get("/script/" + 1L))
@@ -197,7 +185,7 @@ public class ScriptResourceControllerTest {
     private Script script() {
         Script script = new Script();
         script.setId(1L);
-        script.setScript("print('Hello from task1')");
+        script.setBody("print('Hello from task1')");
         script.setStatus(Script.Status.NEW);
         script.setResult("task1: Some result");
         return script;
@@ -206,7 +194,7 @@ public class ScriptResourceControllerTest {
     private static String saveRequestJsonString(Script script) {
         return "{\n" +
 //                "  \"id\": \"" + script.getId() + "\",\n" +
-                "  \"script\": " + script.getScript() + ",\n" +
+                "  \"script\": " + script.getBody() + ",\n" +
                 "  \"status\": \"" + script.getStatus() + "\",\n" +
                 "  \"result\": \"" + script.getResult() + "\"\n" +
                 "}";

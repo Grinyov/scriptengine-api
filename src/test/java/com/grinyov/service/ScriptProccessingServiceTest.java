@@ -41,7 +41,7 @@ public class ScriptProccessingServiceTest {
 
         scripts.forEach(item -> {
             Script script = new Script();
-            script.setScript(item);
+            script.setBody(item);
             script.setStatus(Script.Status.NEW);
             script.setResult("Script result: ");
             scriptRepositoryMock.save(script);

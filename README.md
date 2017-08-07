@@ -1,4 +1,4 @@
-REST API for javax.script.ScriptEngine. 
+REST API for javax.body.ScriptEngine.
 
 The API allows running scripts in a separate thread. And also their process and interrupt if necessary
 

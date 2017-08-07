@@ -80,21 +80,21 @@ The Scripts resource / 'scripts' relation is used to create and list scrips.
 
 [[resources-scripts-create]]
 
-=== Creating an script
+=== Creating an body
 
-A `POST` request is used to create an script
+A `POST` request is used to create an body
 
 ==== Example curl request
 
-include::{snippets}/create-script/curl-request.adoc[]
+include::{snippets}/create-body/curl-request.adoc[]
 
 ==== Example HTTP request
 
-include::{snippets}/create-script/http-request.adoc[]
+include::{snippets}/create-body/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/create-script/http-response.adoc[]
+include::{snippets}/create-body/http-response.adoc[]
 
 ==== Links
 
@@ -102,29 +102,29 @@ include::{snippets}/create-scipt/links.adoc[]
 
 ==== Response Fields
 
-include::{snippets}/create-script/response-fields.adoc[]
+include::{snippets}/create-body/response-fields.adoc[]
 
 [[running]]
-=== Running an script
+=== Running an body
 
-Running the script in a separate thread
+Running the body in a separate thread
 
 ==== Example curl request
 
-include::{snippets}/running-script/curl-request.adoc[]
+include::{snippets}/running-body/curl-request.adoc[]
 
 ==== Example HTTP request
 
-include::{snippets}/running-script/http-request.adoc[]
+include::{snippets}/running-body/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/running-script/http-response.adoc[]
+include::{snippets}/running-body/http-response.adoc[]
 
 ==== Links
 
-include::{snippets}/running-script/links.adoc[]
+include::{snippets}/running-body/links.adoc[]
 
 ==== Response Fields
 
-include::{snippets}/running-script/response-fields.adoc[]
+include::{snippets}/running-body/response-fields.adoc[]

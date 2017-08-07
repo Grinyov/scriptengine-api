@@ -22,12 +22,12 @@ public class Script implements Identifiable<Long> {
     @Version
     private Integer version;*/
 
-    // TODO consider using  @Basic(fetch = FetchType.LAZY) for script body and result (output) properties
+    // TODO consider using  @Basic(fetch = FetchType.LAZY) for body body and result (output) properties
     
     @Column(nullable = false)
-    private String script;
+    private String body;
 
-    // TODO We need script timings in the script resource json representation - when it was created, when it was executed, how long time it took, when it was completed or terminated
+    // TODO We need body timings in the body resource json representation - when it was created, when it was executed, how long time it took, when it was completed or terminated
     
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -42,8 +42,8 @@ public class Script implements Identifiable<Long> {
         return this.id;
     }
 
-    public String getScript() {
-        return this.script;
+    public String getBody() {
+        return this.body;
     }
 
     public Status getStatus() {
@@ -62,8 +62,8 @@ public class Script implements Identifiable<Long> {
         this.id = id;
     }
 
-    public void setScript(String script) {
-        this.script = script;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public void setStatus(Status status) {
@@ -83,11 +83,8 @@ public class Script implements Identifiable<Long> {
         if (!(o instanceof Script)) return false;
         final Script other = (Script) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$id = this.getId();
-        final Object other$id = other.getId();
-        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
-        final Object this$script = this.getScript();
-        final Object other$script = other.getScript();
+        final Object this$script = this.getBody();
+        final Object other$script = other.getBody();
         if (this$script == null ? other$script != null : !this$script.equals(other$script)) return false;
         final Object this$status = this.getStatus();
         final Object other$status = other.getStatus();
@@ -101,9 +98,7 @@ public class Script implements Identifiable<Long> {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $id = this.getId();
-        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $script = this.getScript();
+        final Object $script = this.getBody();
         result = result * PRIME + ($script == null ? 43 : $script.hashCode());
         final Object $status = this.getStatus();
         result = result * PRIME + ($status == null ? 43 : $status.hashCode());
@@ -117,7 +112,7 @@ public class Script implements Identifiable<Long> {
     }
 
     public String toString() {
-        return "com.grinyov.model.Script(id=" + this.getId() + ", script=" + this.getScript() + ", status=" + this.getStatus() + ", result=" + this.getResult() + ")";
+        return "com.grinyov.model.Script(id=" + this.getId() + ", body=" + this.getBody() + ", status=" + this.getStatus() + ", result=" + this.getResult() + ")";
     }
 
     @Transient

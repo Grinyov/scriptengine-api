@@ -35,7 +35,7 @@ public class ScriptRepositoryTest{
     @Test
     public void testSave() {
         Script script = new Script();
-        script.setScript("print('task1')");
+        script.setBody("print('task1')");
         script.setStatus(Script.Status.NEW);
         script.setResult("task1");
         script = scriptRepositoryMock.save(script);
@@ -52,7 +52,7 @@ public class ScriptRepositoryTest{
     @Test
     public void testDeleteID() {
         Script script = new Script();
-        script.setScript("print('task1')");
+        script.setBody("print('task1')");
         script.setStatus(Script.Status.NEW);
         script.setResult("task1");
         script = scriptRepositoryMock.save(script);

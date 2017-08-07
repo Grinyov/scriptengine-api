@@ -28,7 +28,7 @@ public class ScriptValidator implements Validator {
 
     private boolean compileScript(Script script, ScriptEngine engine) {
         try {
-            CompiledScript compiledScript = ((Compilable) engine).compile(script.getScript());
+            CompiledScript compiledScript = ((Compilable) engine).compile(script.getBody());
             logger.debug("Script compiled successful. :-) \n");
             script.setCompiledScript(compiledScript);
             return true;
