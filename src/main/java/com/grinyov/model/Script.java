@@ -30,6 +30,8 @@ public class Script implements Identifiable<Long> {
     @Column(nullable = false)
     private String script;
 
+    // TODO We need script timings in the script resource json representation - when it was created, when it was executed, how long time it took, when it was completed or terminated
+    
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
