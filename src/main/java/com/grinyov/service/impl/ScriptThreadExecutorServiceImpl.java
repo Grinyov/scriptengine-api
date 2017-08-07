@@ -4,6 +4,7 @@ import com.grinyov.controller.ScriptResourceController;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
+import com.grinyov.model.Status;
 import com.grinyov.service.ScriptThreadExecutorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     private void executeScript(Script script) throws ExecutionException {
         StringWriter stringWriter = new StringWriter();
         try {
-            script.setStatus(Script.Status.RUNNING);
+            script.setStatus(Status.RUNNING);
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved 
             scriptRepository.save(script);
             logger.info(script.getStatus());
@@ -53,12 +54,12 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
             // TODO result is not saved during script execution, as it was requested, only after script completion
             script.setResult("The result of running the script: " + stringWriter);
             logger.info(script.getResult());
-            script.setStatus(Script.Status.DONE);
+            script.setStatus(Status.DONE);
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved 
             scriptRepository.save(script);
             logger.info("script executed successful. Status: " + script.getStatus() + ". Detail:  " + script.getResult());
         } catch (ScriptException e) {
-            script.setStatus(Script.Status.FAILED);
+            script.setStatus(Status.FAILED);
             script.setResult("Failed to run the script: " + stringWriter);
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved 
             scriptRepository.save(script);
@@ -139,7 +140,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
                 " is shutdown!");
         tasks.remove(script.getId());
         // TODO is status FAILED or TERMINATED ? FAILED means script completed due to its runtime exception
-        script.setStatus(Script.Status.FAILED);
+        script.setStatus(Status.FAILED);
         scriptRepository.save(script);
         try {
             // TODO meaningless

@@ -1,6 +1,7 @@
 package com.grinyov.service;
 
 import com.grinyov.model.Script;
+import org.springframework.stereotype.Service;
 
 /**
  * The service for starting and Interrupting threads
