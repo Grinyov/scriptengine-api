@@ -146,4 +146,18 @@ public class ScriptResource {
         Script script = scriptService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(script.getScript()));
     }
+
+    /**
+     * GET  /scripts/:id/detail : get the result of running of "id" script.
+     *
+     * @param id the id of the script to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with result of running the script, or with status 404 (Not Found)
+     */
+    @GetMapping("/scripts/{id}/detail")
+    @Timed
+    public ResponseEntity<String> getScriptDetail(@PathVariable Long id) {
+        log.debug("REST request to get result of running of Script : {}", id);
+        Script script = scriptService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(script.getResult()));
+    }
 }
