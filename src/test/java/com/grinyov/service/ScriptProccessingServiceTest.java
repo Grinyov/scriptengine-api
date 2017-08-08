@@ -3,6 +3,7 @@ package com.grinyov.service;
 import com.grinyov.ScriptengineApiApplication;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.model.Script;
+import com.grinyov.model.Status;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ public class ScriptProccessingServiceTest {
         scripts.forEach(item -> {
             Script script = new Script();
             script.setBody(item);
-            script.setStatus(Script.Status.NEW);
+            script.setStatus(Status.NEW);
             script.setResult("Script result: ");
             scriptRepositoryMock.save(script);
         });
@@ -53,14 +54,14 @@ public class ScriptProccessingServiceTest {
     public void performNormal() throws Exception {
         scriptProccessingService.perform(1L);
         Thread.sleep(200);
-        assertEquals(Script.Status.RUNNING, scriptRepositoryMock.findOne(1L).getStatus());
+        assertEquals(Status.RUNNING, scriptRepositoryMock.findOne(1L).getStatus());
     }
 
     @Test
     public void performLoopedScript() throws Exception {
         scriptProccessingService.perform(2L);
         Thread.sleep(3000);
-        assertEquals(Script.Status.RUNNING, scriptRepositoryMock.findOne(2L).getStatus());
+        assertEquals(Status.RUNNING, scriptRepositoryMock.findOne(2L).getStatus());
     }
 
     @Test

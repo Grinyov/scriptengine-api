@@ -116,35 +116,6 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
                 logger.info("Thread was force stopped");
             }
         }
-
-        /**
-         *  snippet for blocking call
-         */
-      /*  ExecutorService executor = executors.get(script.getId());
-        try {
-            executor.shutdown();
-            logger.info("the task is terminated. " + Thread.currentThread() +
-                    " is managed " + executor.toString() + " is shutdown!");
-            executor.awaitTermination(timeout, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.error("script shutdown failed ", e);
-            throw new InvalidScriptStateException(e.getMessage());
-        } finally {
-            if (!executor.isShutdown()) {
-                executor.shutdownNow();
-            }
-            script.setStatus(Script.Status.FAILED);
-            executors.remove(script.getId());
-            scriptRepository.save(script);
-        }*/
-
-        /**
-         *   snippet non-blocking call
-         */
-        /*Future future = futures.get(script.getId());
-        while (future.isCancelled()) {
-            future.cancel(false);
-        }*/
     }
 
     // TODO why exception handler here? It duplicates {@link ScriptResourceController#exceptionHandler}

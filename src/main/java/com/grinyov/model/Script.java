@@ -120,4 +120,6 @@ public class Script implements Identifiable<Long> {
     @Transient
     @JsonIgnore
     private CompiledScript compiledScript;
+
+//    private boolean validate(){};
 }

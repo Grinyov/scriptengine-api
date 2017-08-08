@@ -1,11 +1,13 @@
 package com.grinyov.util;
 
+import com.grinyov.exception.FailedScriptCompilationException;
 import com.grinyov.model.Script;
 import org.apache.log4j.Logger;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import javax.script.*;
+import java.util.logging.Level;
 
 /**
  * TODO since valid script body is an invariant of Script object, consider moving this functionality into Script object. Read about DDD and invariants. 
@@ -33,9 +35,8 @@ public class ScriptValidator implements Validator {
             script.setCompiledScript(compiledScript);
             return true;
         } catch (ScriptException e) {
-            // TODO important information from ScriptException is lost!!!
-            e.printStackTrace(System.err);
-            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(" + e);
+            // TODO(processed) important information from ScriptException is lost!!!
+            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(. Detail: " + e.getMessage());
             return false;
         }
     }
@@ -53,7 +54,8 @@ public class ScriptValidator implements Validator {
         if (!compileScript(script, engine)) {
             logger.error("The script can not compile");
             // TODO returned error object does not contain important information about error
-            errors.rejectValue("script", "Script.script.compile.failed", "The script did not compile");
+            //errors.rejectValue("script", "Script.body.compile.failed", "The script did not compile");
+            throw new FailedScriptCompilationException("The script can not compile");
         }
     }
 }

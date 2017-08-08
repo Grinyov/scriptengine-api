@@ -2,6 +2,7 @@ package com.grinyov.dao;
 
 import com.grinyov.ScriptengineApiApplication;
 import com.grinyov.model.Script;
+import com.grinyov.model.Status;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,7 @@ public class ScriptRepositoryTest{
     public void testSave() {
         Script script = new Script();
         script.setBody("print('task1')");
-        script.setStatus(Script.Status.NEW);
+        script.setStatus(Status.NEW);
         script.setResult("task1");
         script = scriptRepositoryMock.save(script);
         assertNotNull(script.getId());
@@ -53,7 +54,7 @@ public class ScriptRepositoryTest{
     public void testDeleteID() {
         Script script = new Script();
         script.setBody("print('task1')");
-        script.setStatus(Script.Status.NEW);
+        script.setStatus(Status.NEW);
         script.setResult("task1");
         script = scriptRepositoryMock.save(script);
         assertTrue(scriptRepositoryMock.findAll().iterator().hasNext());

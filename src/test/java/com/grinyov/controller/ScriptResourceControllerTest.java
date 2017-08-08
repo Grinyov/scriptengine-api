@@ -3,6 +3,7 @@ package com.grinyov.controller;
 import com.grinyov.ScriptengineApiApplication;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.model.Script;
+import com.grinyov.model.Status;
 import com.grinyov.service.ScriptProccessingService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -186,7 +187,7 @@ public class ScriptResourceControllerTest {
         Script script = new Script();
         script.setId(1L);
         script.setBody("print('Hello from task1')");
-        script.setStatus(Script.Status.NEW);
+        script.setStatus(Status.NEW);
         script.setResult("task1: Some result");
         return script;
     }
