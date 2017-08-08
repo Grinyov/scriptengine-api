@@ -5,7 +5,6 @@ import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
 import com.grinyov.model.Status;
 import com.grinyov.service.ScriptProccessingService;
-import com.grinyov.service.ScriptThreadExecutorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,9 +29,6 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     @Autowired
     private ScriptRepository scriptRepository;
-
-//    @Autowired
-//    private ScriptThreadExecutorService executorService;
 
     private Map<Long, Thread> tasks = new ConcurrentHashMap<>();
 
@@ -69,9 +65,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Override
     public Script perform(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
-        //executorService.runTask(script);
         // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
-
          Runnable runnable = () -> {
             /*// TODO the below logic is meaningless? Or I don't understand its purpose*/
             while (!Thread.currentThread().isInterrupted()) {
