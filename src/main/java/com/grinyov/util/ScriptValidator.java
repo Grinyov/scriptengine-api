@@ -34,7 +34,8 @@ public class ScriptValidator implements Validator {
             return true;
         } catch (ScriptException e) {
             // TODO important information from ScriptException is lost!!!
-            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(");
+            e.printStackTrace(System.err);
+            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(" + e);
             return false;
         }
     }

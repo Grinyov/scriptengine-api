@@ -1,6 +1,5 @@
 package com.grinyov.service.impl;
 
-import com.grinyov.controller.ScriptResourceController;
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
@@ -14,13 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -34,11 +32,10 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
     @Value("${timeout}")
     private int timeout;
 
-    // TODO unused, remove
-    private Map<Long, ExecutorService> executors = new ConcurrentHashMap<>();
+    // TODO(processed) unused, remove
     private Map<Long, Thread> tasks = new ConcurrentHashMap<>();
-    // TODO unused, remove
-    private Map<Long, Future> futures = new ConcurrentHashMap<>();
+    // TODO(processed) unused, remove
+
 
     @Autowired
     private ScriptRepository scriptRepository;
@@ -90,44 +87,7 @@ public class ScriptThreadExecutorServiceImpl implements ScriptThreadExecutorServ
         Thread thread = new Thread(runnable);
         thread.start();
         tasks.put(script.getId(), thread);
-
-        // TODO why do we need an executor here?
-        ExecutorService executor = Executors.newWorkStealingPool();
-        executors.put(script.getId(), executor);
-
-        /**
-         *  snippet for blocking call
-         */
-
-       /* executor.submit(() -> {
-            try {
-                executeScript(script);
-            } catch (ExecutionException e) {
-                logger.error("script executed failed ", e);
-                throw new InvalidScriptStateException(e.getMessage());
-            }
-        });*/
-
-        /**
-         *   snippet non-blocking call
-         */
-
-        /*   Future<String> future = executor.submit(() -> {
-            try {
-                executeScript(script);
-                TimeUnit.SECONDS.sleep(1);
-                return "";
-            } catch (InterruptedException e) {
-                throw new InvalidScriptStateException("task interrupted" + e);
-            }
-        });
-        futures.put(script.getId(), future);
-        try {
-            future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new InvalidScriptStateException("task interrupted" + e);
-        }*/
-
+        // TODO(processed) why do we need an executor here?
     }
 
     @Override
