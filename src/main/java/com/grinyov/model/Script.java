@@ -1,9 +1,11 @@
 package com.grinyov.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Identifiable;
 import javax.persistence.*;
-import javax.script.CompiledScript;
+import javax.script.*;
 
 /**
  * @author vgrinyov
@@ -13,6 +15,19 @@ import javax.script.CompiledScript;
 // that's one of reasons I'd not recommend using Lombok. Another reason is that it does not play well with other annotation processors, like aspectj
 // https://docs.jboss.org/hibernate/stable/core.old/reference/en/html/persistent-classes-equalshashcode.html
 public class Script implements Identifiable<Long> {
+
+    @Transient
+    @JsonIgnore
+    private static final Logger logger = Logger.getLogger(Script.class);
+
+    @Transient
+    @JsonIgnore
+    private ScriptEngine getEngine() {
+        ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName("nashorn");
+        logger.debug("Engine was created");
+        return engine;
+    }
 
     @Id
     @GeneratedValue
@@ -65,7 +80,9 @@ public class Script implements Identifiable<Long> {
     }
 
     public void setBody(String body) {
+        if (compileScript(body, getEngine())) {
         this.body = body;
+        }
     }
 
     public void setStatus(Status status) {
@@ -121,5 +138,16 @@ public class Script implements Identifiable<Long> {
     @JsonIgnore
     private CompiledScript compiledScript;
 
-//    private boolean validate(){};
+    private boolean compileScript(String body, ScriptEngine engine) {
+        try {
+            CompiledScript script = ((Compilable) engine).compile(body);
+            logger.debug("Script compiled successful. :-) \n");
+            this.setCompiledScript(script);
+            return true;
+        } catch (ScriptException e) {
+            // TODO(processed) important information from ScriptException is lost!!!
+            logger.warn("Script \"" + body + "\" compiled unsuccessful. :-(. Detail: " + e.getMessage());
+            return false;
+        }
+    }
 }

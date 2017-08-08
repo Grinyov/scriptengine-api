@@ -21,41 +21,51 @@ public class ScriptValidator implements Validator {
 
     private static final Logger logger = Logger.getLogger(ScriptValidator.class);
 
-    private ScriptEngine getEngine() {
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName("nashorn");
-        logger.debug("Engine was created");
-        return engine;
-    }
-
-    private boolean compileScript(Script script, ScriptEngine engine) {
-        try {
-            CompiledScript compiledScript = ((Compilable) engine).compile(script.getBody());
-            logger.debug("Script compiled successful. :-) \n");
-            script.setCompiledScript(compiledScript);
-            return true;
-        } catch (ScriptException e) {
-            // TODO(processed) important information from ScriptException is lost!!!
-            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(. Detail: " + e.getMessage());
-            return false;
-        }
-    }
-
     @Override
     public boolean supports(Class<?> clazz) {
-        return Script.class.isAssignableFrom(clazz);
+        return false;
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        final Script script = (Script) target;
-        ScriptEngine engine = getEngine();
 
-        if (!compileScript(script, engine)) {
-            logger.error("The script can not compile");
-            // TODO returned error object does not contain important information about error
-            //errors.rejectValue("script", "Script.body.compile.failed", "The script did not compile");
-            throw new FailedScriptCompilationException("The script can not compile");
-        }
     }
+
+//    private ScriptEngine getEngine() {
+//        ScriptEngineManager factory = new ScriptEngineManager();
+//        ScriptEngine engine = factory.getEngineByName("nashorn");
+//        logger.debug("Engine was created");
+//        return engine;
+//    }
+
+//    private boolean compileScript(Script script, ScriptEngine engine) {
+//        try {
+//            CompiledScript compiledScript = ((Compilable) engine).compile(script.getBody());
+//            logger.debug("Script compiled successful. :-) \n");
+//            script.setCompiledScript(compiledScript);
+//            return true;
+//        } catch (ScriptException e) {
+//            // TODO(processed) important information from ScriptException is lost!!!
+//            logger.warn("Script \"" + script + "\" compiled unsuccessful. :-(. Detail: " + e.getMessage());
+//            return false;
+//        }
+//    }
+
+//    @Override
+//    public boolean supports(Class<?> clazz) {
+//        return Script.class.isAssignableFrom(clazz);
+//    }
+//
+//    @Override
+//    public void validate(Object target, Errors errors) {
+//        final Script script = (Script) target;
+//        ScriptEngine engine = getEngine();
+//
+//        if (!compileScript(script, engine)) {
+//            logger.error("The script can not compile");
+//            // TODO returned error object does not contain important information about error
+//            //errors.rejectValue("script", "Script.body.compile.failed", "The script did not compile");
+//            throw new FailedScriptCompilationException("The script can not compile");
+//        }
+//    }
 }
