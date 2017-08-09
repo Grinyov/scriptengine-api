@@ -1,10 +1,13 @@
 package com.grinyov.controller;
 
+import com.grinyov.exception.InvalidScriptStateException;
+import com.grinyov.exception.ScriptNotFoundException;
 import com.grinyov.service.ScriptProccessingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -86,10 +89,18 @@ public class ScriptResourceController {
     // NPEs, Out of memory errors and other runtime exceptions and ERRORS are also likely server errors (5xx)
     // but errors aren't handled yet
     
-    @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> exceptionHandler(Exception e) {
+    @ExceptionHandler(InvalidScriptStateException.class)
+    public ResponseEntity<Object> scriptStateExceptionHandler(Exception e) {
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("message", e.getMessage());
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler({ScriptNotFoundException.class, ResourceNotFoundException.class})
+    public ResponseEntity<Object> notFoundExceptionHandler(Exception e) {
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", e.getMessage());
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
 }

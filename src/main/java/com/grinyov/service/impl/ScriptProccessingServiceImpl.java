@@ -2,12 +2,14 @@ package com.grinyov.service.impl;
 
 import com.grinyov.dao.ScriptRepository;
 import com.grinyov.exception.InvalidScriptStateException;
+import com.grinyov.exception.ScriptNotFoundException;
 import com.grinyov.model.Script;
 import com.grinyov.model.Status;
 import com.grinyov.service.ScriptProccessingService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.script.ScriptException;
@@ -87,18 +89,22 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     @Override
-    // TODO consider marking read only transactional methods with read only transactional annotation
+    // TODO(processed) consider marking read only transactional methods with read only transactional annotation
+    @Transactional(readOnly = true, propagation= Propagation.SUPPORTS)
     public Script status(Long id) {
         Script script = scriptRepository.findOne(id);
+        if (script == null){
+            throw new ScriptNotFoundException("Script with id: " + id +  " not found in database" );
+        }
         logger.info("script " + script.getId() +
                 " status: " + script.getStatus());
-        // TODO why do we need to save script here?
-        // What if findOne cannot find script with such an id? We need to return 404 
-        return scriptRepository.save(script);
+        // TODO(processed) why do we need to save script here?
+        // (processed) What if findOne cannot find script with such an id? We need to return 404
+        return script;
     }
 
     @Override
-    public Script terminate(Long id) throws InvalidScriptStateException {
+    public Script terminate(Long id) {
         Script script = scriptRepository.findOne(id);
         // TODO what if there's no script with such an id?
         Thread currentThread = tasks.get(script.getId());
