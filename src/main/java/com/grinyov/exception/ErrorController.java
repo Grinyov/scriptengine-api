@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author vgrinyov
  */
 @ControllerAdvice
-public class ErrorController {
+public class ErrorController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidScriptStateException.class)
     public ResponseEntity<Object> scriptStateExceptionHandler(Exception e) {
@@ -30,7 +31,7 @@ public class ErrorController {
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ScriptNotFoundException.class, ResourceNotFoundException.class})
+    @ExceptionHandler(value = {ScriptNotFoundException.class, ResourceNotFoundException.class})
     public ResponseEntity<Object> notFoundExceptionHandler(Exception e) {
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("message", e.getMessage());
