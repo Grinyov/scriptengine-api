@@ -42,12 +42,10 @@ public class ScriptEventHandler {
      */
     @HandleBeforeCreate
     public void scriptValidating(Script script) {
-        if (script.compileScript(script.getBody(), getEngine())){
-            scriptRepository.save(script);
-        } else{
+        if (!script.compileScript(script.getBody(), getEngine())){
             logger.warn("Script \"" + script.getBody() + "\" compiled unsuccessful");
             throw new InvalidScriptStateException("compiled unsuccessful");
-        }
+        } 
     }
 
     /**
