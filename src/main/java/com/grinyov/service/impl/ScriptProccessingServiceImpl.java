@@ -59,7 +59,6 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
             // TODO important error information is lost, including stack trace!!!
             throw new InvalidScriptStateException("script executed unsuccessful!");
         }
-
     }
 
     @Override

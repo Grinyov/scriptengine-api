@@ -20,15 +20,6 @@ public class Script implements Identifiable<Long> {
     @JsonIgnore
     private static final Logger logger = Logger.getLogger(Script.class);
 
-    @Transient
-    @JsonIgnore
-    private ScriptEngine getEngine() {
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName("nashorn");
-        logger.debug("Engine was created");
-        return engine;
-    }
-
     @Id
     @GeneratedValue
     private Long id;
@@ -80,9 +71,7 @@ public class Script implements Identifiable<Long> {
     }
 
     public void setBody(String body) {
-        if (compileScript(body, getEngine())) {
         this.body = body;
-        }
     }
 
     public void setStatus(Status status) {
@@ -138,7 +127,7 @@ public class Script implements Identifiable<Long> {
     @JsonIgnore
     private CompiledScript compiledScript;
 
-    private boolean compileScript(String body, ScriptEngine engine) {
+    public boolean compileScript(String body, ScriptEngine engine) {
         try {
             CompiledScript script = ((Compilable) engine).compile(body);
             logger.debug("Script compiled successful. :-) \n");
