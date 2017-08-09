@@ -47,7 +47,6 @@ public class ScriptEventHandler {
             throw new InvalidScriptStateException("compiled unsuccessful");
         } 
     }
-
     /**
      * Handle created scripts and run them
      */

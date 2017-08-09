@@ -83,24 +83,4 @@ public class ScriptResourceController {
         return asm.toFullResource(scriptProccessingService.terminate(id));
     }
 
-    // TODO are all error kinds really bad requests?
-    // What about if ID is incorrect? 404 not found should be returned. 
-    // What if script engine cannot be found due to different version of JRE? It is a kind of server error. Same with misconfigured or unavailable database connection..
-    // NPEs, Out of memory errors and other runtime exceptions and ERRORS are also likely server errors (5xx)
-    // but errors aren't handled yet
-    
-    @ExceptionHandler(InvalidScriptStateException.class)
-    public ResponseEntity<Object> scriptStateExceptionHandler(Exception e) {
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", e.getMessage());
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler({ScriptNotFoundException.class, ResourceNotFoundException.class})
-    public ResponseEntity<Object> notFoundExceptionHandler(Exception e) {
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", e.getMessage());
-        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
-    }
-
 }
