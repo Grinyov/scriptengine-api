@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author vgrinyov
  */
-@ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+@ResponseStatus(HttpStatus.CONFLICT)
 public class FailedScriptCompilationException extends RuntimeException {
     public FailedScriptCompilationException(String message) {
         super(message);

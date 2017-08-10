@@ -1,12 +1,24 @@
 package com.grinyov.exception;
 
+import org.apache.log4j.Logger;
+import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.data.rest.webmvc.support.ExceptionMessage;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLDataException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,25 +35,57 @@ import java.util.Map;
  */
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {
+    private static final Logger logger = Logger.getLogger(ErrorController.class);
 
-    @ExceptionHandler(InvalidScriptStateException.class)
-    public ResponseEntity<Object> scriptStateExceptionHandler(Exception e) {
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", e.getMessage());
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-    }
+        /**
+         * Catch all for any other exceptions...
+         */
+        @ExceptionHandler({ Exception.class })
+        @ResponseBody
+        public ResponseEntity<?> handleAnyException(Exception e) {
+            return errorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-    @ExceptionHandler(value = {ScriptNotFoundException.class, ResourceNotFoundException.class})
-    public ResponseEntity<Object> notFoundExceptionHandler(Exception e) {
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", e.getMessage());
-        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
-    }
+        /**
+         * Handle failures commonly thrown from code
+         */
+        @ExceptionHandler({ InvalidScriptStateException.class, FailedScriptCompilationException.class, InvocationTargetException.class, IllegalArgumentException.class, ClassCastException.class,
+                ConversionFailedException.class})
+        @ResponseBody
+        public ResponseEntity handleMiscFailures(Throwable t) {
+            return errorResponse(t, HttpStatus.BAD_REQUEST);
+        }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> serverSideExceptionHandler(Exception e) {
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", e.getMessage());
-        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+        /**
+         * Handle failures with resources thrown from code
+         */
+        @ExceptionHandler({ResourceNotFoundException.class, ScriptNotFoundException.class,  IllegalMonitorStateException.class})
+        @ResponseBody
+        public ResponseEntity handleCustomFailures(Throwable t) {
+            return errorResponse(t, HttpStatus.NOT_FOUND);
+        }
+
+
+        protected ResponseEntity<ExceptionMessage> errorResponse(Throwable throwable,
+                                                                 HttpStatus status) {
+            if (null != throwable) {
+                logger.error("error caught: " + throwable.getMessage(), throwable);
+                return response(new ExceptionMessage(throwable), status);
+            } else {
+                logger.error("unknown error caught in API, {}");
+                return response(null, status);
+            }
+        }
+
+        protected <T> ResponseEntity<T> response(T body, HttpStatus status) {
+            logger.debug("Responding with a status of {}");
+            return new ResponseEntity<>(body, new HttpHeaders(), status);
+        }
+
+//    @ExceptionHandler(value = {NullPointerException.class, SQLDataException.class, DataAccessException.class, IllegalMonitorStateException.class})
+//    public ResponseEntity<Object> serverSideExceptionHandler(Exception e) {
+//        Map<String, String> responseBody = new HashMap<>();
+//        responseBody.put("message", e.getMessage());
+//        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

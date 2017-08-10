@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author vgrinyov
  */
-@ResponseStatus(HttpStatus.CONFLICT)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidScriptStateException extends RuntimeException {
     public InvalidScriptStateException(String message) {
         super(message);
