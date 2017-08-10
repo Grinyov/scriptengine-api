@@ -1,18 +1,14 @@
 package com.grinyov.controller;
 
-import com.grinyov.exception.InvalidScriptStateException;
-import com.grinyov.exception.ScriptNotFoundException;
 import com.grinyov.service.ScriptProccessingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Controller for handling of script
@@ -25,8 +21,7 @@ public class ScriptResourceController {
     @Autowired
     private ScriptProccessingService scriptProccessingService;
 
-    
-    
+
     /**
      * TODO implemented REST API interface is unnecessary complex and inconsistent
      * 1. Immediately create Script by POSTing to /scripts/ with plaintext containing script body
@@ -34,16 +29,16 @@ public class ScriptResourceController {
      * 3. getting script info as json in /scripts/ and /scripts/id should not return its body and result, those are returned by separate resources
      * 4. DELETE /scripts/id/ should also terminate if script is running
      * 5. /running should be named /run or /execute; it should check current status and synchronize on script instance to avoid starting and terminating simultaneously
-     * and it should use POST because it is not idempotent, and return only status code, not body 
+     * and it should use POST because it is not idempotent, and return only status code, not body
      * 6. see this link in requirements http://restcookbook.com/Resources/asynchroneous-operations/ what status code is returned in case of async operations
      * 7. Some responses may be cached on client (like script body). Some, like output (you named it result), should not be cached. Have a look at cache control and conditional http headers
-     * 
-     * 
-     * 
+     * <p>
+     * <p>
+     * <p>
      * Create resource for running script
      */
 
-    @RequestMapping(value = "/scripts/{id}/running",
+    @RequestMapping(value = "/scripts/{id}/run",
             method = RequestMethod.PUT, produces = "application/hal+json")
     @ResponseBody
     public PersistentEntityResource perform(@PathVariable("id") Long id,
@@ -72,7 +67,6 @@ public class ScriptResourceController {
      * Create resource for terminating script
      * TODO terminate resource should return non-successful response it is already terminated or not started, 404 if it does not exist, and should use
      * POST because it is not idempotent, it also likely should not return body, just status is enough
-     *   
      */
 
     @RequestMapping(value = "/scripts/{id}/terminate",

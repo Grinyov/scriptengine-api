@@ -5,7 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
+
+import javax.persistence.Id;
 
 /**
  * Repository for script
@@ -26,6 +29,10 @@ public interface ScriptRepository extends PagingAndSortingRepository<Script, Lon
      */
 
     @Query("select script from Script script where script.status = 'RUNNING'")
-    @RestResource(path = "running")
+    @RestResource(path = "run")
     Page<Script> findRunning(Pageable pageable);
+
+    @Query("select script.result from Script script where script.id = :id")
+    @RestResource(path = "detail")
+    String findResultById(@Param("id")Long id);
 }

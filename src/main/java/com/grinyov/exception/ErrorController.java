@@ -35,7 +35,7 @@ import java.util.Map;
  */
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {
-    private static final Logger logger = Logger.getLogger(ErrorController.class);
+    private static final Logger log = Logger.getLogger(ErrorController.class);
 
         /**
          * Catch all for any other exceptions...
@@ -69,16 +69,16 @@ public class ErrorController extends ResponseEntityExceptionHandler {
         protected ResponseEntity<ExceptionMessage> errorResponse(Throwable throwable,
                                                                  HttpStatus status) {
             if (null != throwable) {
-                logger.error("error caught: " + throwable.getMessage(), throwable);
+                log.error("error caught: " + throwable.getMessage(), throwable);
                 return response(new ExceptionMessage(throwable), status);
             } else {
-                logger.error("unknown error caught in API, {}");
+                log.error("unknown error caught in API, {}");
                 return response(null, status);
             }
         }
 
         protected <T> ResponseEntity<T> response(T body, HttpStatus status) {
-            logger.debug("Responding with a status of {}");
+            log.debug("Responding with a status of {}");
             return new ResponseEntity<>(body, new HttpHeaders(), status);
         }
 

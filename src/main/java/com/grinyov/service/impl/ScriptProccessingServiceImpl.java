@@ -141,12 +141,11 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         return script.getBody();
     }
 
-    // TODO make this a repository method which selects only result property, not the entire entity
+    // TODO(processed) make this a repository method which selects only result property, not the entire entity
     // TODO consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
     public String viewDetail(Long id) {
-        Script script = scriptRepository.findOne(id);
-        return script.getResult();
+        return scriptRepository.findResultById(id);
     }
 
 }
