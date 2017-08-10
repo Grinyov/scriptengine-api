@@ -23,7 +23,6 @@ public class ScriptResourceProcessor implements ResourceProcessor<Resource<Scrip
                 viewOne(script.getId(), null)).withRel("status"));
         resource.add(linkTo(methodOn(ScriptResourceController.class).
                 terminateOne(script.getId(), null)).withRel("terminate"));
-
         return resource;
     }
 }

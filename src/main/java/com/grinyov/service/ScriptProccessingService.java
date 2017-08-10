@@ -48,6 +48,6 @@ public interface ScriptProccessingService {
      * @param id
      * @return result of running the script as plain text
      */
-    String viewDetail(Long id);
+    String viewResult(Long id);
 
 }

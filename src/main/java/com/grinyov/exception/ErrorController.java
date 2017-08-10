@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Controller for handling of errors
  *
- * // TODO(partly processed) are all error kinds really bad requests?
+ * // TODO(processed) are all error kinds really bad requests?
  // What about if ID is incorrect? 404 not found should be returned.
  // What if script engine cannot be found due to different version of JRE? It is a kind of server error. Same with misconfigured or unavailable database connection..
  // NPEs, Out of memory errors and other runtime exceptions and ERRORS are also likely server errors (5xx)

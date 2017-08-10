@@ -31,14 +31,14 @@ public class ScriptViewController {
     }
 
     /**
-     * TODO why is it named /detail, not result (inconsistent naming)?
+     * TODO(processed) why is it named /detail, not result (inconsistent naming)?
      * Create resource for viewing result of performing script
      */
 
-    @RequestMapping(value = "/scripts/{id}/detail",
+    @RequestMapping(value = "/scripts/{id}/result",
             method = RequestMethod.GET, produces = "text/plain")
     @ResponseBody
     public String viewScriptDetail(@PathVariable("id") Long id) {
-        return scriptProccessingService.viewDetail(id);
+        return scriptProccessingService.viewResult(id);
     }
 }
