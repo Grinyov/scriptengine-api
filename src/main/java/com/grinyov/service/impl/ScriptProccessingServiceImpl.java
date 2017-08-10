@@ -8,6 +8,7 @@ import com.grinyov.model.Status;
 import com.grinyov.service.ScriptProccessingService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,15 +135,17 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     // TODO(processed) make this a repository method which selects only script property, not the entire entity
-    // TODO consider using in-memory cache of Scripts, this is faster than connecting to database
+    // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
+    @Cacheable(cacheNames="scripts", key = "#id", sync = true)
     public String viewBody(Long id) {
         return scriptRepository.findBodyById(id);
     }
 
     // TODO(processed) make this a repository method which selects only result property, not the entire entity
-    // TODO consider using in-memory cache of Scripts, this is faster than connecting to database
+    // TODO (processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
+    @Cacheable(cacheNames="scripts", key = "#id", sync = true)
     public String viewResult(Long id) {
         return scriptRepository.findResultById(id);
     }

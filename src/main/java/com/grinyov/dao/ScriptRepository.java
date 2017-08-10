@@ -32,6 +32,7 @@ public interface ScriptRepository extends PagingAndSortingRepository<Script, Lon
     @RestResource(path = "running")
     Page<Script> findRunning(Pageable pageable);
 
+
     @Query("select script.result from Script script where script.id = :id")
     @RestResource(path = "result")
     String findResultById(@Param("id")Long id);
