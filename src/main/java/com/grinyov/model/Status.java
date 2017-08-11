@@ -13,5 +13,7 @@ public enum Status {
 
     DONE,
 
-    FAILED
+    FAILED,
+
+    TERMINATED
 }

@@ -76,6 +76,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
             /*// TODO the below logic is meaningless? Or I don't understand its purpose*/
             while (!Thread.currentThread().isInterrupted()) {
                 try {
+                    logger.info("thread " + Thread.currentThread().getName() + " is running.");
                     executeScript(script);
                     return;
                     // TODO when execution exception can be thrown? In what thread?
@@ -117,27 +118,37 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         }
         Thread currentThread = tasks.get(script.getId());
         currentThread.interrupt();
-        // TODO task may not be terminated
-        logger.info("the task is terminated. " + currentThread.getName() +
-                " is shutdown!");
+        // TODO(processed) task may not be terminated
+        logger.info("the task running in " + currentThread.getName() + " trying stop. ");
         tasks.remove(script.getId());
-        // TODO is status FAILED or TERMINATED ? FAILED means script completed due to its runtime exception
-        script.setStatus(Status.FAILED);
-        scriptRepository.save(script);
+        // TODO(processed) is status FAILED or TERMINATED ? FAILED means script completed due to its runtime exception
         try {
-            // TODO meaningless
+            currentThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            logger.warn("thread " + currentThread.getName() + " was interrupted. Detail: " + e.getMessage());
+            currentThread.interrupt();
+        }
+        if (currentThread.isAlive()) {
+            currentThread.stop();
+            logger.warn("Thread was force stopped");
+        }
+        logger.info("thread " + currentThread.getName() + " was stopped.");
+        script.setStatus(Status.TERMINATED);
+        /*try {
+            // TODO(processed) meaningless
             currentThread.wait(500);
         } catch (InterruptedException e) {
-            // TODO InterruptedException may happened above try
-            // TODO Why do we throw this exception if it is an expected behavior?
+            // TODO(processed) InterruptedException may happened above try
+            // TODO(processed) Why do we throw this exception if it is an expected behavior?
             throw new InvalidScriptStateException(e.getMessage());
         } finally {
-            // TODO why this part is in finally block?
+            // TODO(processed) why this part is in finally block?
             if (currentThread.isAlive()) {
                 currentThread.stop();
                 logger.info("Thread was force stopped");
             }
-        }
+        }*/
         return scriptRepository.save(script);
     }
 
