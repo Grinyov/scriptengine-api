@@ -61,13 +61,16 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
             scriptRepository.save(script);
             logger.error("The script can not execute", e);
             // TODO important error information is lost, including stack trace!!!
-            throw new InvalidScriptStateException("script executed unsuccessful!");
+            throw new InvalidScriptStateException("script executed unsuccessful!. Detail: " + e.getMessage());
         }
     }
 
     @Override
     public Script perform(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
+        if (script == null){
+            throw new ScriptNotFoundException("Script with id: " + id +  " not found in database" );
+        }
         // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
          Runnable runnable = () -> {
             /*// TODO the below logic is meaningless? Or I don't understand its purpose*/
@@ -108,7 +111,10 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Override
     public Script terminate(Long id) {
         Script script = scriptRepository.findOne(id);
-        // TODO what if there's no script with such an id?
+        // TODOprocessed) what if there's no script with such an id?
+        if (script == null || script.getStatus() != Status.RUNNING ){
+            throw new ScriptNotFoundException("Script with id: " + id +  " not running" );
+        }
         Thread currentThread = tasks.get(script.getId());
         currentThread.interrupt();
         // TODO task may not be terminated
@@ -144,7 +150,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     }
 
     // TODO(processed) make this a repository method which selects only result property, not the entire entity
-    // TODO (processed) consider using in-memory cache of Scripts, this is faster than connecting to database
+    // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
     @Cacheable(cacheNames="scripts", key = "{#root.method, #id}", sync = true)
     public String viewResult(Long id) {
