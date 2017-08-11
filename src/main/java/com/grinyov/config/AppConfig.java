@@ -3,6 +3,8 @@ package com.grinyov.config;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.UriTemplate;
@@ -27,5 +29,4 @@ public class AppConfig {
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager("scripts");
     }
-
 }
