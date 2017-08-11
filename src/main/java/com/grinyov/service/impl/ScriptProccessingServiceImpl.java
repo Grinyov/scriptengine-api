@@ -138,7 +138,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) make this a repository method which selects only script property, not the entire entity
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
-    @Cacheable(cacheNames="scripts", key = "#root.method", sync = true)
+    @Cacheable(cacheNames="scripts", key = "{#root.method, #id}", sync = true)
     public String viewBody(Long id) {
         return scriptRepository.findBodyById(id);
     }
@@ -146,7 +146,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) make this a repository method which selects only result property, not the entire entity
     // TODO (processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
-    @Cacheable(cacheNames="scripts", key = "#root.method", sync = true)
+    @Cacheable(cacheNames="scripts", key = "{#root.method, #id}", sync = true)
     public String viewResult(Long id) {
         return scriptRepository.findResultById(id);
     }
