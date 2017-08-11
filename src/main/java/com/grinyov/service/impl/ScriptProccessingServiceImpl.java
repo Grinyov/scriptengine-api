@@ -6,6 +6,7 @@ import com.grinyov.exception.ScriptNotFoundException;
 import com.grinyov.model.Script;
 import com.grinyov.model.Status;
 import com.grinyov.service.ScriptProccessingService;
+import com.grinyov.util.ScriptEventHandler;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.script.ScriptContext;
 import javax.script.ScriptException;
+import javax.script.SimpleScriptContext;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,19 +39,22 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     private Map<Long, Thread> tasks = new ConcurrentHashMap<>();
 
+    private ScriptContext context;
 
     private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);
 
     private void executeScript(Script script) throws ExecutionException {
-        StringWriter stringWriter = new StringWriter();
+        StringWriter writer = new StringWriter();
+        context = new SimpleScriptContext();
+        context.setWriter(writer);
         try {
             script.setStatus(Status.RUNNING);
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
             scriptRepository.save(script);
             logger.info(script.getStatus());
-            script.getCompiledScript().eval();
+            script.getCompiledScript().eval(context);
             // TODO result is not saved during script execution, as it was requested, only after script completion
-            script.setResult("The result of running the script: " + stringWriter);
+            script.setResult("The result of running the script: " + writer.getBuffer());
             logger.info(script.getResult());
             script.setStatus(Status.DONE);
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
@@ -56,7 +62,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
             logger.info("script executed successful. Status: " + script.getStatus() + ". Detail:  " + script.getResult());
         } catch (ScriptException e) {
             script.setStatus(Status.FAILED);
-            script.setResult("Failed to run the script: " + stringWriter);
+            script.setResult("Failed to run the script: " + writer.getBuffer());
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
             scriptRepository.save(script);
             logger.error("The script can not execute", e);
