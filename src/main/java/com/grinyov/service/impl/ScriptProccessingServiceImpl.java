@@ -24,10 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
- * TODO the substantial problem with existing implementation is that state is not properly synchronized between persistent and in-memory state.  
- * Lets assume we restart our server while some scripts are in RUNNING state. Then, persistent repository will return them as RUNNING, but in fact in-memory state is lost, and there's 
- * no thread associated with the RUNNING script instance.  
- * 
+ * TODO the substantial problem with existing implementation is that state is not properly synchronized between persistent and in-memory state.
+ * Lets assume we restart our server while some scripts are in RUNNING state. Then, persistent repository will return them as RUNNING, but in fact in-memory state is lost, and there's
+ * no thread associated with the RUNNING script instance.
+ * <p>
  * Created by vgrinyov.
  */
 @Service
@@ -66,7 +66,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
             // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
             scriptRepository.save(script);
             logger.error("The script can not execute", e);
-            // TODO important error information is lost, including stack trace!!!
+            // TODO(processed) important error information is lost, including stack trace!!!
             throw new InvalidScriptStateException("script executed unsuccessful!. Detail: " + e.getMessage());
         }
     }
@@ -74,11 +74,14 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Override
     public Script perform(Long id) throws InvalidScriptStateException {
         Script script = scriptRepository.findOne(id);
-        if (script == null){
-            throw new ScriptNotFoundException("Script with id: " + id +  " not found in database" );
+        if (script == null) {
+            throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
+        }
+        if (script.getStatus() == Status.RUNNING){
+            throw new InvalidScriptStateException("Script with id: " + id + " already started ");
         }
         // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
-         Runnable runnable = () -> {
+        Runnable runnable = () -> {
             /*// TODO the below logic is meaningless? Or I don't understand its purpose*/
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -96,17 +99,16 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         Thread thread = new Thread(runnable);
         thread.start();
         tasks.put(script.getId(), thread);
-
         return scriptRepository.save(script);
     }
 
     @Override
     // TODO(processed) consider marking read only transactional methods with read only transactional annotation
-    @Transactional(readOnly = true, propagation= Propagation.SUPPORTS)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Script status(Long id) {
         Script script = scriptRepository.findOne(id);
-        if (script == null){
-            throw new ScriptNotFoundException("Script with id: " + id +  " not found in database" );
+        if (script == null) {
+            throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
         }
         logger.info("script " + script.getId() +
                 " status: " + script.getStatus());
@@ -119,8 +121,8 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     public Script terminate(Long id) {
         Script script = scriptRepository.findOne(id);
         // TODOprocessed) what if there's no script with such an id?
-        if (script == null || script.getStatus() != Status.RUNNING ){
-            throw new ScriptNotFoundException("Script with id: " + id +  " not running" );
+        if (script == null || script.getStatus() != Status.RUNNING) {
+            throw new ScriptNotFoundException("Script with id: " + id + " not running");
         }
         Thread currentThread = tasks.get(script.getId());
         currentThread.interrupt();
@@ -161,7 +163,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) make this a repository method which selects only script property, not the entire entity
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
-    @Cacheable(cacheNames="scripts", key = "{#root.method, #id}", sync = true)
+    @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
     public String viewBody(Long id) {
         return scriptRepository.findBodyById(id);
     }
@@ -169,7 +171,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) make this a repository method which selects only result property, not the entire entity
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
-    @Cacheable(cacheNames="scripts", key = "{#root.method, #id}", sync = true)
+    @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
     public String viewResult(Long id) {
         return scriptRepository.findResultById(id);
     }

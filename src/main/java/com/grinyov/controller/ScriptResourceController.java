@@ -28,7 +28,7 @@ public class ScriptResourceController {
      * 2. getting /scripts/id/ and /scripts/id/status returns the same body, should remain only former
      * 3. getting script info as json in /scripts/ and /scripts/id should not return its body and result, those are returned by separate resources
      * 4. DELETE /scripts/id/ should also terminate if script is running
-     * 5. /running should be named /run or /execute; it should check current status and synchronize on script instance to avoid starting and terminating simultaneously
+     * 5. (processed)  /running should be named /run or /execute; it should check current status and synchronize on script instance to avoid starting and terminating simultaneously
      * and it should use POST because it is not idempotent, and return only status code, not body
      * 6. see this link in requirements http://restcookbook.com/Resources/asynchroneous-operations/ what status code is returned in case of async operations
      * 7. Some responses may be cached on client (like script body). Some, like output (you named it result), should not be cached. Have a look at cache control and conditional http headers
