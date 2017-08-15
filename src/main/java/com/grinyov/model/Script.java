@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Identifiable;
+import org.springframework.util.concurrent.ListenableFutureTask;
+
 import javax.persistence.*;
 import javax.script.*;
+import java.util.concurrent.Callable;
 
 /**
  * @author vgrinyov
@@ -14,7 +17,7 @@ import javax.script.*;
 // TODO(processed) Do Lombok generated hashcode and equals implementations match requirements of JPA entities?
 // that's one of reasons I'd not recommend using Lombok. Another reason is that it does not play well with other annotation processors, like aspectj
 // https://docs.jboss.org/hibernate/stable/core.old/reference/en/html/persistent-classes-equalshashcode.html
-public class Script implements Identifiable<Long> {
+public class Script extends ListenableFutureTask implements Identifiable<Long> {
 
     @Transient
     @JsonIgnore
@@ -43,8 +46,12 @@ public class Script implements Identifiable<Long> {
     @Basic(fetch = FetchType.LAZY)
     private String result;
 
-    public Script() {
+    public Script(Callable callable) {
+        super(callable);
     }
+
+//    public Script() {
+//    }
 
     public Long getId() {
         return this.id;
