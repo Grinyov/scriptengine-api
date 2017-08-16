@@ -38,19 +38,13 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);
 
     @Override
-    public String perform(Long id) throws InvalidScriptStateException {
-        // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
-        // TODO the below logic is meaningless? Or I don't understand its purpose*/
-        // TODO when execution exception can be thrown? In what thread?
-        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+    public Script perform(Long id) throws InvalidScriptStateException {
+        // TODO(processed) what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
+        // TODO(processed) the below logic is meaningless? Or I don't understand its purpose*/
+        // TODO(processed) when execution exception can be thrown? In what thread?
+        // TODO(processed) why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
         // TODO result is not saved during script execution, as it was requested, only after script completion
-        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
-        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
         // TODO(processed) important error information is lost, including stack trace!!!
-        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
-        // TODO result is not saved during script execution, as it was requested, only after script completion
-        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
-        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
         // TODO(processed) important error information is lost, including stack trace!!!
         Script script = scriptRepository.findOne(id);
         if (script == null) {
@@ -59,27 +53,27 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         if (script.getStatus() == Status.RUNNING) {
             throw new InvalidScriptStateException("Script with id: " + id + " already started ");
         }
+        scripts.put(id, script);
         Thread thread = new Thread(script);
+        tasks.put(id, thread);
         thread.start();
-        tasks.put(script.getId(), thread);
         try {
             thread.join();
         } catch (InterruptedException e) {
             logger.warn(thread.getName() + " throw exception", e);
             thread.interrupt();
         }
-        scriptRepository.save(script);
         logger.info("Status: " + script.getStatus() + ". Detail:  " + script.getResult());
-        return script.getResult();
+        return scriptRepository.save(script);
     }
 
     @Override
     // TODO(processed) consider marking read only transactional methods with read only transactional annotation
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+    //@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Script status(Long id) {
-        Script script = scriptRepository.findOne(id);
+        Script script = scripts.get(id);
         if (script == null) {
-            throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
+            throw new ScriptNotFoundException("Script with id: " + id + " not running. Please choose it and run");
         }
         logger.info("script " + script.getId() +
                 " status: " + script.getStatus());
@@ -94,7 +88,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         Script script = scripts.get(id);
         // TODOprocessed) what if there's no script with such an id?
         if (script == null || script.getStatus() != Status.RUNNING) {
-            throw new ScriptNotFoundException("Script with id: " + id + " not running");
+            throw new ScriptNotFoundException("Script with id: " + id + " not running. Please choose it and run");
         }
         Thread currentThread = tasks.get(script.getId());
         currentThread.interrupt();

@@ -16,7 +16,7 @@ public interface ScriptProccessingService {
      * @param id 
      * @return script
      */
-    String perform(Long id);
+    Script perform(Long id);
 
     /**
      * Shows status of script
