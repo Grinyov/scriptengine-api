@@ -35,43 +35,18 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     private Map<Long, Script> scripts = new ConcurrentHashMap<>();
 
-    private ScriptContext context;
-
     private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);
-
- /*   private void executeScript(Script script) throws ExecutionException {
-        StringWriter writer = new StringWriter();
-        context = new SimpleScriptContext();
-        context.setWriter(writer);
-        try {
-            script.setStatus(Status.RUNNING);
-            // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
-            scriptRepository.save(script);
-            logger.info(script.getStatus());
-            script.getCompiledScript().eval(context);
-            // TODO result is not saved during script execution, as it was requested, only after script completion
-            script.setResult("The result of running the script: " + writer.getBuffer());
-            logger.info(script.getResult());
-            script.setStatus(Status.DONE);
-            // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
-            scriptRepository.save(script);
-            logger.info("script executed successful. Status: " + script.getStatus() + ". Detail:  " + script.getResult());
-        } catch (ScriptException e) {
-            script.setStatus(Status.FAILED);
-            script.setResult("Failed to run the script: " + writer.getBuffer());
-            // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
-            scriptRepository.save(script);
-            logger.error("The script can not execute", e);
-            // TODO(processed) important error information is lost, including stack trace!!!
-            throw new InvalidScriptStateException("script executed unsuccessful!. Detail: " + e.getMessage());
-        }
-    }*/
 
     @Override
     public String perform(Long id) throws InvalidScriptStateException {
         // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
         // TODO the below logic is meaningless? Or I don't understand its purpose*/
         // TODO when execution exception can be thrown? In what thread?
+        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+        // TODO result is not saved during script execution, as it was requested, only after script completion
+        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+        // TODO(processed) important error information is lost, including stack trace!!!
         // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
         // TODO result is not saved during script execution, as it was requested, only after script completion
         // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
