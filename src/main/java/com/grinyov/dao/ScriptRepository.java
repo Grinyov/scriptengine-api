@@ -1,6 +1,7 @@
 package com.grinyov.dao;
 
 import com.grinyov.model.Script;
+import org.hibernate.annotations.NotFound;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -36,9 +37,10 @@ public interface ScriptRepository extends PagingAndSortingRepository<Script, Lon
 
     @Query("select script.result from Script script where script.id = :id")
     @RestResource(path = "result")
-    Optional<String> findResultById(@Param("id")Long id);
+    @NotFound
+    String findResultById(@Param("id")Long id);
 
     @Query("select script.body from Script script where script.id = :id")
     @RestResource(path = "body")
-    Optional<String> findBodyById(@Param("id")Long id);
+    String findBodyById(@Param("id")Long id);
 }

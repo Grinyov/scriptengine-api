@@ -172,4 +172,8 @@ public class Script implements Identifiable<Long>, Runnable {
             }
         }
     }
+
+    public ScriptContext getContext() {
+        return context;
+    }
 }

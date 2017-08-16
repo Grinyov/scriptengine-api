@@ -42,7 +42,7 @@ public interface ScriptProccessingService {
      * @param id
      * @return script's body as plain text
      */
-    Optional<String> viewBody(Long id);
+    String viewBody(Long id);
 
     /**
      * Views the detail of running the script
@@ -50,6 +50,6 @@ public interface ScriptProccessingService {
      * @param id
      * @return result of running the script as plain text
      */
-    Optional<String> viewResult(Long id);
+    String viewResult(Long id);
 
 }

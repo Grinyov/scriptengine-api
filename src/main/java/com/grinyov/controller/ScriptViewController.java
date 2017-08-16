@@ -28,7 +28,7 @@ public class ScriptViewController {
     @RequestMapping(value = "/scripts/{id}/body",
             method = RequestMethod.GET, produces = "text/plain")
     @ResponseBody
-    public Optional<String> viewScriptBody(@PathVariable("id") Long id) {
+    public String viewScriptBody(@PathVariable("id") Long id) {
         return scriptProccessingService.viewBody(id);
     }
 
@@ -40,7 +40,7 @@ public class ScriptViewController {
     @RequestMapping(value = "/scripts/{id}/result",
             method = RequestMethod.GET, produces = "text/plain")
     @ResponseBody
-    public Optional<String> viewScriptDetail(@PathVariable("id") Long id) {
+    public String viewScriptDetail(@PathVariable("id") Long id) {
         return scriptProccessingService.viewResult(id);
     }
 }

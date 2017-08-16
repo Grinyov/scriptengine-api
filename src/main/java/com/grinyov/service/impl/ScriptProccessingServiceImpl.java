@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.script.ScriptException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,22 +90,23 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         if (script == null || script.getStatus() != Status.RUNNING) {
             throw new ScriptNotFoundException("Script with id: " + id + " not running. Please choose it and run");
         }
-        Thread currentThread = tasks.get(script.getId());
+        Thread currentThread = tasks.get(id);
         currentThread.interrupt();
+        script.setResult(script.getContext().getWriter().toString());
         // TODO(processed) task may not be terminated
         logger.info("the task running in " + currentThread.getName() + " trying stop. ");
         tasks.remove(script.getId());
         // TODO(processed) is status FAILED or TERMINATED ? FAILED means script completed due to its runtime exception
         try {
-            currentThread.join();
+            currentThread.join(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            logger.warn("thread " + currentThread.getName() + " was interrupted. Detail: " + e.getMessage());
+            logger.warn(currentThread.getName() + " was interrupted. Detail: " + e.getMessage());
             currentThread.interrupt();
         }
         if (currentThread.isAlive()) {
             currentThread.stop();
-            logger.warn("Thread was force stopped");
+            logger.warn(currentThread.getName() + " was force stopped");
         }
         logger.info("thread " + currentThread.getName() + " was stopped.");
         script.setStatus(Status.TERMINATED);
@@ -119,16 +121,24 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
     @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
-    public Optional<String> viewBody(Long id) {
-        return scriptRepository.findBodyById(id);
+    public String viewBody(Long id) {
+        String body = scriptRepository.findBodyById(id);
+        if (body == null){
+            throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
+        }
+        return body;
     }
 
     // TODO(processed) make this a repository method which selects only result property, not the entire entity
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
     @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
-    public Optional<String> viewResult(Long id) {
-        return scriptRepository.findResultById(id);
+    public String viewResult(Long id) {
+        String result = scriptRepository.findResultById(id);
+        if (result == null){
+            throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
+        }
+        return result;
     }
 
 }
