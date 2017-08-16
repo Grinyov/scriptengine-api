@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Id;
+import java.util.Optional;
 
 /**
  * Repository for script
@@ -35,9 +36,9 @@ public interface ScriptRepository extends PagingAndSortingRepository<Script, Lon
 
     @Query("select script.result from Script script where script.id = :id")
     @RestResource(path = "result")
-    String findResultById(@Param("id")Long id);
+    Optional<String> findResultById(@Param("id")Long id);
 
     @Query("select script.body from Script script where script.id = :id")
     @RestResource(path = "body")
-    String findBodyById(@Param("id")Long id);
+    Optional<String> findBodyById(@Param("id")Long id);
 }

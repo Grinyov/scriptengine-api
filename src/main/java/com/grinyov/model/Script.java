@@ -2,15 +2,11 @@ package com.grinyov.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Identifiable;
-import org.springframework.util.concurrent.ListenableFutureTask;
 
 import javax.persistence.*;
 import javax.script.*;
 import java.io.StringWriter;
-import java.util.concurrent.Callable;
-import java.util.concurrent.RunnableFuture;
 
 /**
  * @author vgrinyov
@@ -44,7 +40,7 @@ public class Script implements Identifiable<Long>, Runnable {
     private String body;
 
     // TODO We need body timings in the body resource json representation - when it was created, when it was executed, how long time it took, when it was completed or terminated
-    
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
@@ -158,20 +154,20 @@ public class Script implements Identifiable<Long>, Runnable {
             context.setWriter(writer);
             this.setStatus(Status.RUNNING);
             Thread.currentThread().setName("Thread " + this.id);
-            logger.info( Thread.currentThread().getName() + " is running.");
+            logger.info(Thread.currentThread().getName() + " is running.");
             try {
                 this.compiledScript.eval(context);
                 this.setResult("The result of running the script: " + writer.getBuffer());
                 logger.info(this.getResult());
                 this.setStatus(Status.DONE);
-                logger.info("script executed successful. Status: " +this.getStatus() + ". Detail:  " + this.getResult());
+                logger.info("script executed successful. Status: " + this.getStatus() + ". Detail:  " + this.getResult());
             } catch (ScriptException e) {
                 logger.error("script executed failed ", e);
                 this.setStatus(Status.FAILED);
                 this.setResult("Failed to run the script: " + writer.getBuffer());
                 Thread.currentThread().interrupt();
             }
-            if (this.getStatus() != Status.RUNNING){
+            if (this.getStatus() != Status.RUNNING) {
                 return;
             }
         }

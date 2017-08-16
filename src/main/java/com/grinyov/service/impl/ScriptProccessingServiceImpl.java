@@ -10,11 +10,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.script.ScriptContext;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -120,7 +119,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
     @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
-    public String viewBody(Long id) {
+    public Optional<String> viewBody(Long id) {
         return scriptRepository.findBodyById(id);
     }
 
@@ -128,7 +127,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     // TODO(processed) consider using in-memory cache of Scripts, this is faster than connecting to database
     @Override
     @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
-    public String viewResult(Long id) {
+    public Optional<String> viewResult(Long id) {
         return scriptRepository.findResultById(id);
     }
 

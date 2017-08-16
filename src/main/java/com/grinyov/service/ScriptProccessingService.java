@@ -2,6 +2,8 @@ package com.grinyov.service;
 
 import com.grinyov.model.Script;
 
+import java.util.Optional;
+
 /**
  * The service for starting, detailing of script and finishing the script processing
  *
@@ -40,7 +42,7 @@ public interface ScriptProccessingService {
      * @param id
      * @return script's body as plain text
      */
-    String viewBody(Long id);
+    Optional<String> viewBody(Long id);
 
     /**
      * Views the detail of running the script
@@ -48,6 +50,6 @@ public interface ScriptProccessingService {
      * @param id
      * @return result of running the script as plain text
      */
-    String viewResult(Long id);
+    Optional<String> viewResult(Long id);
 
 }
