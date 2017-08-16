@@ -8,7 +8,9 @@ import org.springframework.util.concurrent.ListenableFutureTask;
 
 import javax.persistence.*;
 import javax.script.*;
+import java.io.StringWriter;
 import java.util.concurrent.Callable;
+import java.util.concurrent.RunnableFuture;
 
 /**
  * @author vgrinyov
@@ -17,11 +19,15 @@ import java.util.concurrent.Callable;
 // TODO(processed) Do Lombok generated hashcode and equals implementations match requirements of JPA entities?
 // that's one of reasons I'd not recommend using Lombok. Another reason is that it does not play well with other annotation processors, like aspectj
 // https://docs.jboss.org/hibernate/stable/core.old/reference/en/html/persistent-classes-equalshashcode.html
-public class Script extends ListenableFutureTask implements Identifiable<Long> {
+public class Script implements Identifiable<Long>, Runnable {
 
     @Transient
     @JsonIgnore
     private static final Logger logger = Logger.getLogger(Script.class);
+
+    @Transient
+    @JsonIgnore
+    private ScriptContext context;
 
     @Id
     @GeneratedValue
@@ -46,12 +52,8 @@ public class Script extends ListenableFutureTask implements Identifiable<Long> {
     @Basic(fetch = FetchType.LAZY)
     private String result;
 
-    public Script(Callable callable) {
-        super(callable);
+    public Script() {
     }
-
-//    public Script() {
-//    }
 
     public Long getId() {
         return this.id;
@@ -144,6 +146,34 @@ public class Script extends ListenableFutureTask implements Identifiable<Long> {
             // TODO(processed) important information from ScriptException is lost!!!
             logger.warn("Script \"" + body + "\" compiled unsuccessful. :-(. Detail: " + e.getMessage());
             return false;
+        }
+    }
+
+
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            StringWriter writer = new StringWriter();
+            context = new SimpleScriptContext();
+            context.setWriter(writer);
+            this.setStatus(Status.RUNNING);
+            Thread.currentThread().setName("Thread " + this.id);
+            logger.info( Thread.currentThread().getName() + " is running.");
+            try {
+                this.compiledScript.eval(context);
+                this.setResult("The result of running the script: " + writer.getBuffer());
+                logger.info(this.getResult());
+                this.setStatus(Status.DONE);
+                logger.info("script executed successful. Status: " +this.getStatus() + ". Detail:  " + this.getResult());
+            } catch (ScriptException e) {
+                logger.error("script executed failed ", e);
+                this.setStatus(Status.FAILED);
+                this.setResult("Failed to run the script: " + writer.getBuffer());
+                Thread.currentThread().interrupt();
+            }
+            if (this.getStatus() != Status.RUNNING){
+                return;
+            }
         }
     }
 }

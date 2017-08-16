@@ -6,22 +6,16 @@ import com.grinyov.exception.ScriptNotFoundException;
 import com.grinyov.model.Script;
 import com.grinyov.model.Status;
 import com.grinyov.service.ScriptProccessingService;
-import com.grinyov.util.ScriptEventHandler;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.script.ScriptContext;
-import javax.script.ScriptException;
-import javax.script.SimpleScriptContext;
-import java.io.StringWriter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 /**
  * TODO the substantial problem with existing implementation is that state is not properly synchronized between persistent and in-memory state.
@@ -39,11 +33,13 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     private Map<Long, Thread> tasks = new ConcurrentHashMap<>();
 
+    private Map<Long, Script> scripts = new ConcurrentHashMap<>();
+
     private ScriptContext context;
 
     private static final Logger logger = Logger.getLogger(ScriptProccessingServiceImpl.class);
 
-    private void executeScript(Script script) throws ExecutionException {
+ /*   private void executeScript(Script script) throws ExecutionException {
         StringWriter writer = new StringWriter();
         context = new SimpleScriptContext();
         context.setWriter(writer);
@@ -69,37 +65,37 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
             // TODO(processed) important error information is lost, including stack trace!!!
             throw new InvalidScriptStateException("script executed unsuccessful!. Detail: " + e.getMessage());
         }
-    }
+    }*/
 
     @Override
-    public Script perform(Long id) throws InvalidScriptStateException {
+    public String perform(Long id) throws InvalidScriptStateException {
+        // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
+        // TODO the below logic is meaningless? Or I don't understand its purpose*/
+        // TODO when execution exception can be thrown? In what thread?
+        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+        // TODO result is not saved during script execution, as it was requested, only after script completion
+        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+        // TODO why calling save so much times? Read JPA/Hibernate doc about how and when entity is saved
+        // TODO(processed) important error information is lost, including stack trace!!!
         Script script = scriptRepository.findOne(id);
         if (script == null) {
             throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
         }
-        if (script.getStatus() == Status.RUNNING){
+        if (script.getStatus() == Status.RUNNING) {
             throw new InvalidScriptStateException("Script with id: " + id + " already started ");
         }
-        // TODO what if next method fails and transaction rolls back? There will be no record in database but still a thread running script in memory
-        Runnable runnable = () -> {
-            /*// TODO the below logic is meaningless? Or I don't understand its purpose*/
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    logger.info("thread " + Thread.currentThread().getName() + " is running.");
-                    executeScript(script);
-                    return;
-                    // TODO when execution exception can be thrown? In what thread?
-                } catch (ExecutionException e) {
-                    logger.error("script executed failed ", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-        };
-
-        Thread thread = new Thread(runnable);
+        Thread thread = new Thread(script);
         thread.start();
         tasks.put(script.getId(), thread);
-        return scriptRepository.save(script);
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            logger.warn(thread.getName() + " throw exception", e);
+            thread.interrupt();
+        }
+        scriptRepository.save(script);
+        logger.info("Status: " + script.getStatus() + ". Detail:  " + script.getResult());
+        return script.getResult();
     }
 
     @Override
@@ -119,7 +115,8 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     @Override
     public Script terminate(Long id) {
-        Script script = scriptRepository.findOne(id);
+        //Script script = scriptRepository.findOne(id);
+        Script script = scripts.get(id);
         // TODOprocessed) what if there's no script with such an id?
         if (script == null || script.getStatus() != Status.RUNNING) {
             throw new ScriptNotFoundException("Script with id: " + id + " not running");
@@ -143,20 +140,10 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         }
         logger.info("thread " + currentThread.getName() + " was stopped.");
         script.setStatus(Status.TERMINATED);
-        /*try {
-            // TODO(processed) meaningless
-            currentThread.wait(500);
-        } catch (InterruptedException e) {
-            // TODO(processed) InterruptedException may happened above try
-            // TODO(processed) Why do we throw this exception if it is an expected behavior?
-            throw new InvalidScriptStateException(e.getMessage());
-        } finally {
-            // TODO(processed) why this part is in finally block?
-            if (currentThread.isAlive()) {
-                currentThread.stop();
-                logger.info("Thread was force stopped");
-            }
-        }*/
+        // TODO(processed) meaningless
+        // TODO(processed) InterruptedException may happened above try
+        // TODO(processed) Why do we throw this exception if it is an expected behavior?
+        // TODO(processed) why this part is in finally block?
         return scriptRepository.save(script);
     }
 

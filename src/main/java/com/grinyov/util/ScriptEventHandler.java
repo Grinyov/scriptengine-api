@@ -51,7 +51,7 @@ public class ScriptEventHandler {
      * Handle created scripts and run them
      */
     @HandleAfterCreate
-    public void scriptRunning(Script script) {
+    public void scriptRunning(Script script) throws InterruptedException {
         scriptProccessingService.perform(script.getId());
     }
 }
