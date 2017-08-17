@@ -1,11 +1,13 @@
 package com.grinyov.util;
 
 import com.grinyov.dao.ScriptRepository;
+import com.grinyov.event.ScriptLaunched;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.model.Script;
 import com.grinyov.service.ScriptProccessingService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
@@ -53,5 +55,14 @@ public class ScriptEventHandler {
     @HandleAfterCreate
     public void scriptRunning(Script script) {
         scriptProccessingService.perform(script.getId());
+    }
+
+    /**
+     * Handle launched scripts and add task of writing result to scheduler
+     */
+    @EventListener
+    public void scriptResultWriting(ScriptLaunched scriptLaunched){
+        Long id = scriptLaunched.getEventData();
+        // run  task for script with id
     }
 }

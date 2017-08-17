@@ -60,7 +60,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         Thread thread = new Thread(script);
         tasks.put(id, thread);
         thread.start();
-        ScriptLaunched scriptLaunched = new ScriptLaunched(this, id)
+        ScriptLaunched scriptLaunched = new ScriptLaunched(this, id);
         eventPublisher.publishEvent(scriptLaunched);
         try {
             thread.join();

@@ -17,4 +17,8 @@ public class ScriptLaunched extends ApplicationEvent {
         super(source);
         this.id = id;
     }
+
+    public Long getEventData(){
+        return id;
+    }
 }
