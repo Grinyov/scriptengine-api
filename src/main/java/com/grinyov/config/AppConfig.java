@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  *  Application additional configuration
@@ -18,6 +20,8 @@ import org.springframework.hateoas.hal.DefaultCurieProvider;
  */
 @Configuration
 @EnableCaching
+@EnableAsync
+@EnableScheduling
 public class AppConfig {
 
     @Bean
