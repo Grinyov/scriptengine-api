@@ -1,6 +1,7 @@
 package com.grinyov.service.impl;
 
 import com.grinyov.dao.ScriptRepository;
+import com.grinyov.event.ScriptLaunched;
 import com.grinyov.exception.InvalidScriptStateException;
 import com.grinyov.exception.ScriptNotFoundException;
 import com.grinyov.model.Script;
@@ -9,16 +10,15 @@ import com.grinyov.service.ScriptProccessingService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.script.ScriptException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TODO the substantial problem with existing implementation is that state is not properly synchronized between persistent and in-memory state.
+ * TODO(processed) the substantial problem with existing implementation is that state is not properly synchronized between persistent and in-memory state.
  * Lets assume we restart our server while some scripts are in RUNNING state. Then, persistent repository will return them as RUNNING, but in fact in-memory state is lost, and there's
  * no thread associated with the RUNNING script instance.
  * <p>
@@ -30,6 +30,9 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
 
     @Autowired
     private ScriptRepository scriptRepository;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     private Map<Long, Thread> tasks = new ConcurrentHashMap<>();
 
@@ -57,6 +60,8 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
         Thread thread = new Thread(script);
         tasks.put(id, thread);
         thread.start();
+        ScriptLaunched scriptLaunched = new ScriptLaunched(this, id)
+        eventPublisher.publishEvent(scriptLaunched);
         try {
             thread.join();
         } catch (InterruptedException e) {
@@ -123,7 +128,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
     public String viewBody(Long id) {
         String body = scriptRepository.findBodyById(id);
-        if (body == null){
+        if (body == null) {
             throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
         }
         return body;
@@ -135,7 +140,7 @@ public class ScriptProccessingServiceImpl implements ScriptProccessingService {
     @Cacheable(cacheNames = "scripts", key = "{#root.method, #id}", sync = true)
     public String viewResult(Long id) {
         String result = scriptRepository.findResultById(id);
-        if (result == null){
+        if (result == null) {
             throw new ScriptNotFoundException("Script with id: " + id + " not found in database");
         }
         return result;
