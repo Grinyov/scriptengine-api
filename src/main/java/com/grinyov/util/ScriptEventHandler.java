@@ -17,6 +17,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 /**
+ * Handler different events in the application
+ *
  * @author vgrinyov
  */
 @Component
@@ -63,6 +65,7 @@ public class ScriptEventHandler {
     @EventListener
     public void scriptResultWriting(ScriptLaunched scriptLaunched){
         Long id = scriptLaunched.getEventData();
+        logger.info("script with id: " + id + " launched");
         // run  task for script with id
     }
 }

@@ -3,7 +3,9 @@ package com.grinyov.event;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * Created by vgrinyov on 17.08.2017.
+ * Event notifying that the script is running
+ *
+ * @author vgrinyov
  */
 public class ScriptLaunched extends ApplicationEvent {
 
