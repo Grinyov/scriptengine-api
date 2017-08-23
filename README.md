@@ -21,6 +21,5 @@ TODO add requirements here
 
 <h4> Docker</h4>
  <ul>
-   <li>Build project with maven</li>
-   <li> Create docker image</li>
-   <li>Run: docker run -p 8080:8080 -t <imagename></li>
+   <li> Create docker image: mvn package fabric8:build -Dmaven.test.skip=true </li>
+   <li>Run: docker run -p 8080:8080 -t "imagename"</li>
