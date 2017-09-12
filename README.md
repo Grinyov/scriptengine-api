@@ -21,5 +21,10 @@ TODO add requirements here
 
 <h4> Docker</h4>
  <ul>
-   <li> Create docker image: mvn package fabric8:build -Dmaven.test.skip=true </li>
+   <li> Package project: mvn package -Dmaven.test.skip=true </li>
+   <li> Create docker image: mvn dockerfile:build </li>
    <li>Run: docker run -p 8080:8080 -t "imagename"</li>
+   <li>Detail: https://github.com/spotify/dockerfile-maven</li>
+ </ul>
+
+
