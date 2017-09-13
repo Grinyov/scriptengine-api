@@ -21,10 +21,16 @@ TODO add requirements here
 
 <h4> Docker</h4>
  <ul>
-   <li> Package project: mvn package -Dmaven.test.skip=true </li>
-   <li> Create docker image: mvn dockerfile:build </li>
+   <li>Package project: mvn package -Dmaven.test.skip=true </li>
+   <li>Create docker image: mvn dockerfile:build </li>
    <li>Run: docker run -p 8080:8080 -t "imagename"</li>
    <li>Detail: https://github.com/spotify/dockerfile-maven</li>
  </ul>
 
-
+<h4>AWS Elastic Beanstalk</h4>
+ <ul>
+   <li>Add image to dockerhub</li>	
+   <li>Create environment with single docker</li>	
+   <li>Add Dockerrun.aws.json</li>	
+   <li>Launch and enjoy</li>	
+ </ul>
